@@ -1,9 +1,15 @@
+% responseTiming_Aper determines the response timing of the subject, defined
+% as the time between the onset of an error signal stim (i.e., the
+% beginning of a stimulus train that indicates that the subject is outside
+% of the target region) and the subject changing the direction of motion of
+% their hand
+
 %% Timing analysis
 
 trial = 13;
 startTime = 19;
 endTime = 134;
-fileName = strcat('C:\Users\jcronin\Data\Subjects\ecb43e\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-', num2str(trial));
+fileName = strcat('C:\Users\jcronin\Data\Subjects\ecb43e, April 2015\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-', num2str(trial));
 load(fileName);
 
 SamplingRate = Stim.info.SamplingRateHz;
@@ -221,4 +227,4 @@ save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime'
 
 num_insidePeriods = length(inTime)
 
-%% Time to successful correction, when followed by x amount of time inside the target range
+%% TO-DO: Time to successful correction, when followed by x amount of time inside the target range

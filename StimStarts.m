@@ -1,7 +1,8 @@
 function [starts, startsPks, startsTime] = StimStarts(stimWave, stimSamplingRateHz, ITI_samples)
 %StimStarts will return the indeces of the stimWave that start each
 %stimulation when there's a state change
-%   Detailed explanation goes here
+
+%TO-DO:    Detailed explanation goes here
 
 [pks,locs] = findpeaks(stimWave);
 

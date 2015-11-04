@@ -8,7 +8,8 @@ function [num, locsPos, locsNeg] = ZeroCrossing(X, 'location')
 %   actually equal 0, therefore the function can return the index of the
 %   array just before it crosses 0, or just after)
 
-% Actually location will always be high - explain why here
+% TO-DO:
+% Actually location will always be high - explain why here....
 
 dir = zeros(size(X));
 dir(X>0) = 1;

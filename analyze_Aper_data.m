@@ -1,9 +1,23 @@
-%function [] = analyze_Aper_data()
+% This script can plot all of the stim waveforms, plot the aperture target
+% pathway and current position, calculate the chance accuracy level, and
+% display any of the parameters that you choose.
+
+% The file name (absolute path) must be hardcoded below. The startTime and
+% endTime parameters indicate what region of the task to consider in
+% seconds (i.e., you can cut out the portion of the trace before the stim
+% was turned on - indicated by the discontinuity in the target path when it
+% resets to it's starting location - and you can cut out the last second or
+% two if you notice another discontinuity which sometimes occurs). To
+% determine the start and end times you can run the 'Plot the target space
+% and aperture positions' subsection which will plot the x-axis in seconds,
+% then zoom in to see where the discontinuities occur. 
+% TO-DO: HARD CODE THE ABOVE!!
+
 calculateChanceAccuracy = 1;
-fileName = 'C:\Users\jcronin\Data\Subjects\ecb43e\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-6';
+fileName = 'C:\Users\jcronin\Data\Subjects\fca96e, July 2015\data\d7\fca96e_Aperture\Matlab\Aperture-8';
 load(fileName);
-startTime = 0; %seconds
-endTime = 150; %seconds
+startTime = 31; %seconds
+endTime = 151; %seconds
 
 SamplingRate = Stim.info.SamplingRateHz;
 
@@ -81,8 +95,8 @@ if calculateChanceAccuracy == 1
     
     for i=1:1000
         dx_shuffled = dx(randperm(length(dx))); 
-%         pos_shuffled = cumsum([Aper.data(startSamp,1) dx_shuffled']); % shuffled (so as if
-        %drawing without replacement
+%         pos_shuffled = cumsum([Aper.data(startSamp,1) dx_shuffled']); %
+%         shuffled (so as if drawing without replacement)
         
         pos_shuffled = cumsum([Aper.data(startSamp,1) dx(randi(length(dx), size(dx)))']); % drawing with replacement
        
@@ -98,10 +112,55 @@ plot(Aper_time(startSamp:endSamp), Aper.data((startSamp:endSamp),3),'r')
 %stem(startingTime, 'y')
 
 averageChanceAccuracy = mean(accuracyChance)
+std_chance = std(accuracyChance)
 
 end
 
-% %% Print the parameter values
+%% Compute the chance value, starting from when subject first enters the target range
+if calculateChanceAccuracy == 1
+    
+    accuracyChance = zeros(1000,1);
+    % Find time when the task started
+    % StartingTaskIndeces = find(Task.data(:,1)==1,3);
+    % startTime = StartingTaskIndeces(2)/Task.info.SamplingRateHz;
+
+    startSamp = floor(startTime*Aper_SamplingRate);
+    endSamp = floor(endTime*Aper_SamplingRate);
+    %endSamp = length(Aper.data(:,1))-100;
+        
+    % Determine when subject first enters the target range - that will be
+    % used as the starting point
+    entersTarget = find(Aper.data(startSamp:endSamp,1) < Aper.data(startSamp:endSamp,2) & Aper.data(startSamp:endSamp,1) > Aper.data(startSamp:endSamp,3), 1) + startSamp-1;
+    
+    dx = diff(Aper.data(entersTarget:endSamp,1));
+    
+    for i=1:1000
+        dx_shuffled = dx(randperm(length(dx))); 
+%         pos_shuffled = cumsum([Aper.data(startSamp,1) dx_shuffled']); %
+%         shuffled (so as if drawing without replacement)
+        
+        pos_shuffled = cumsum([Aper.data(entersTarget,1) dx(randi(length(dx), size(dx)))']); % drawing with replacement
+       
+        % Calculate the accuracy
+        accuracyChance(i, 1) = sum(pos_shuffled' < Aper.data(entersTarget:endSamp,2) & pos_shuffled' > Aper.data(entersTarget:endSamp,3))/length(pos_shuffled');
+    end
+% Plot
+figure
+plot(Aper_time(entersTarget:endSamp), pos_shuffled, 'b')
+hold on
+plot(Aper_time(entersTarget:endSamp), Aper.data((entersTarget:endSamp),2),'r')
+plot(Aper_time(entersTarget:endSamp), Aper.data((entersTarget:endSamp),3),'r')
+%stem(startingTime, 'y')
+
+averageChanceAccuracy = mean(accuracyChance)
+std_chance = std(accuracyChance)
+
+end
+
+
+
+%% Print the parameter values
+
 % catchVar = max(Task.data(:,4))
 % NStimChans = max(Task.data(:,6))
 % disp('Stim 0')

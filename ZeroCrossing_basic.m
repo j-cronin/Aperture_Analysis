@@ -1,4 +1,6 @@
 function [locsPos, locsNeg] = ZeroCrossing_basic(X)
+% TO-DO: add to this explanation:
+
 %ZeroCrossing identifies the number of times and the locations at which the
 %signal, X, crosses zero (changes from positive to negative)
 %   ZeroCrossing will return both the number of times the signal crosses

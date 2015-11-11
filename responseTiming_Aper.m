@@ -71,12 +71,12 @@ stateChanges(stimChanges_pks == max(Stm0.data(:,1))) =  1;
 stateChanges(stimChanges_pks == 0) =  2;
 
 %% Time to successful correction
-try
-    load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
-catch
-    avg_correctionTime = zeros(19,2);
-    save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
-end
+% try % Fix this!
+%     load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
+% catch
+%     avg_correctionTime = zeros(19,2);
+%     save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
+% end
 
 % out = double(aper > Aper.data(startSampAper:endSampAper-1,2) | aper < Aper.data(startSampAper:endSampAper-1,3));
 out = double(aperFilt > Aper.data(startSampAper:endSampAper,2) | aperFilt < Aper.data(startSampAper:endSampAper,3));
@@ -130,12 +130,12 @@ avg_correctionTime(trial, 2) = avg_corrTimeHigh;
 save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
 
 %% Response time (Stim to Change in the sign of the velocity, or change in the direction of movement)
-try
-    load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
-catch
-    avg_responseTime = zeros(19,2);
-    save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
-end
+% try
+%     load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
+% catch
+%     avg_responseTime = zeros(19,2);
+%     save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
+% end
 
 dx=diff(aperFilt);
 
@@ -202,12 +202,12 @@ avg_responseTime(trial,2) = avg_respTimeHigh;
 save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
 
 %% Periods of time that subject's trace remains in the target range
-try
-    load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
-catch
-    avg_inTime = zeros(19,1);
-    save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
-end
+% try    % Fix this!
+%     load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
+% catch
+%     avg_inTime = zeros(19,1);
+%     save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
+% end
 
 in = double(~out);
 

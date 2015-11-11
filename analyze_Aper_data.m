@@ -16,8 +16,13 @@
 calculateChanceAccuracy = 1;
 fileName = 'C:\Users\jcronin\Data\Subjects\fca96e, July 2015\data\d7\fca96e_Aperture\Matlab\Aperture-8';
 load(fileName);
-startTime = 31; %seconds
-endTime = 151; %seconds
+startTime = 38; %seconds
+endTime = 134; %seconds
+startSamp = floor(startTime*Aper_SamplingRate);
+endSamp = floor(endTime*Aper_SamplingRate);
+Aper_SamplingRate = Aper.info.SamplingRateHz;
+Aper_timeStep = 1/Aper_SamplingRate;
+Aper_time = 0:Aper_timeStep:Aper_timeStep*length(Aper.data(:,1))-Aper_timeStep;
 
 SamplingRate = Stim.info.SamplingRateHz;
 
@@ -67,15 +72,23 @@ ylabel('Counter')
 
 
 %% Plot the target space and aperture positions
-Aper_SamplingRate = Aper.info.SamplingRateHz;
-Aper_timeStep = 1/Aper_SamplingRate;
-Aper_time = 0:Aper_timeStep:Aper_timeStep*length(Aper.data(:,1))-Aper_timeStep;
-
 figure(1)
+hold off
 plot(Aper_time, Aper.data(:,1),'b')
 hold on
 plot(Aper_time, Aper.data(:,2),'r')
 plot(Aper_time, Aper.data(:,3),'r')
+xlabel('Time (s)');
+ylabel('Hand Aperture Position');
+legend('hand aperture', 'high target', 'low target');
+
+%% Plot the target space and aperture positions from start time to end time
+figure(1)
+hold off
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 1),'b')
+hold on
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 2),'r')
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 3),'r')
 xlabel('Time (s)');
 ylabel('Hand Aperture Position');
 legend('hand aperture', 'high target', 'low target');
@@ -88,8 +101,6 @@ if calculateChanceAccuracy == 1
     % StartingTaskIndeces = find(Task.data(:,1)==1,3);
     % startTime = StartingTaskIndeces(2)/Task.info.SamplingRateHz;
 
-    startSamp = floor(startTime*Aper_SamplingRate);
-    endSamp = floor(endTime*Aper_SamplingRate);
     %endSamp = length(Aper.data(:,1))-100;
     dx = diff(Aper.data(startSamp:endSamp,1));
     

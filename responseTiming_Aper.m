@@ -63,7 +63,14 @@ plot(Aper.data(startSampAper:endSampAper,2),'r')
 plot(Aper.data(startSampAper:endSampAper,3),'r')
 title('Moving average filtered aperture data');
 
-[stimChanges, stimChanges_pks, stimChanges_time] = StimStarts(Stim.data(startSampStim:endSampStim,4), SamplingRate, max(Stm0.data(:,13)));
+ITI_ms = max(Stm0.data(:,13));
+PTD_ms =  max(Stm0.data(:,10));
+IPI_us = max(Stm0.data(:,7));
+
+[stimChanges, stimChanges_pks, stimChanges_time] = StimStarts(Stim.data(startSampStim:endSampStim,4), SamplingRate, ITI_ms, PTD_ms, IPI_us, 'on'); % This doesn't take into account the face that the PTD, IPI, etc. may differ between the different pulses.
+% Consider changing the above code, so that you figure out the stimStarts
+% for the different stimulation waveforms separately and then combine the
+% actual stimStarts based on the state that was used at any given time... 
 stimChanges_samps = stimChanges_time*Aper_SamplingRate;
 stateChanges = zeros(size(stimChanges_pks));
 stateChanges(stimChanges_pks == max(Stm1.data(:,1))) =  3;  

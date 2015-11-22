@@ -14,13 +14,13 @@
 % TO-DO: HARD CODE THE ABOVE!!
 
 calculateChanceAccuracy = 1;
-fileName = 'C:\Users\jcronin\Data\Subjects\fca96e, July 2015\data\d7\fca96e_Aperture\Matlab\Aperture-8';
+fileName = 'C:\Users\jcronin\Data\Subjects\ecb43e, April 2015\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-13';
 load(fileName);
 startTime = 38; %seconds
 endTime = 134; %seconds
+Aper_SamplingRate = Aper.info.SamplingRateHz;
 startSamp = floor(startTime*Aper_SamplingRate);
 endSamp = floor(endTime*Aper_SamplingRate);
-Aper_SamplingRate = Aper.info.SamplingRateHz;
 Aper_timeStep = 1/Aper_SamplingRate;
 Aper_time = 0:Aper_timeStep:Aper_timeStep*length(Aper.data(:,1))-Aper_timeStep;
 
@@ -72,7 +72,7 @@ ylabel('Counter')
 
 
 %% Plot the target space and aperture positions
-figure(1)
+figure()
 hold off
 plot(Aper_time, Aper.data(:,1),'b')
 hold on

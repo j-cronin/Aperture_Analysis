@@ -6,10 +6,12 @@
 
 %% Timing analysis
 
-trial = 13;
+addpath('C:\Users\jcronin\Box Sync\Code\Matlab\SigAnal');
+
+trial = 9;
 startTime = 19;
 endTime = 134;
-fileName = strcat('C:\Users\jcronin\Data\Subjects\ecb43e, April 2015\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-', num2str(trial));
+fileName = strcat('C:\Users\jcronin\Data\Subjects\fca96e\data\d7\fca96e_Aperture\Matlab\Aperture-', num2str(trial));
 load(fileName);
 
 SamplingRate = Stim.info.SamplingRateHz;
@@ -21,7 +23,8 @@ Aper_timeStep = 1/Aper_SamplingRate;
 Aper_time = (0:length(Aper.data(:,1))-1)/Aper_SamplingRate;
 
 figure
-plot(Aper_time, Aper.data(:,1),'b')
+% plot(Aper_time, Aper.data(:,1),'b')
+plot(Aper_time, [0;0; diff(diff(Aper.data(:,1)))],'b')
 hold on
 plot(Aper_time, Aper.data(:,2),'g')
 plot(Aper_time, Aper.data(:,3),'g')
@@ -67,7 +70,7 @@ ITI_ms = max(Stm0.data(:,13));
 PTD_ms =  max(Stm0.data(:,10));
 IPI_us = max(Stm0.data(:,7));
 
-[stimChanges, stimChanges_pks, stimChanges_time] = StimStarts(Stim.data(startSampStim:endSampStim,4), SamplingRate, ITI_ms, PTD_ms, IPI_us, 'on'); % This doesn't take into account the face that the PTD, IPI, etc. may differ between the different pulses.
+[stimChanges, stimEnds, stimChanges_pks, stimChanges_time] = StimStarts(Stim.data(startSampStim:endSampStim,4), SamplingRate, ITI_ms, PTD_ms, IPI_us, 'on'); % This doesn't take into account the face that the PTD, IPI, etc. may differ between the different pulses.
 % Consider changing the above code, so that you figure out the stimStarts
 % for the different stimulation waveforms separately and then combine the
 % actual stimStarts based on the state that was used at any given time... 
@@ -134,7 +137,7 @@ title('Correction Time when too open');
 % Save
 avg_correctionTime(trial, 1) = avg_corrTimeLow;
 avg_correctionTime(trial, 2) = avg_corrTimeHigh;
-save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
+%save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime', 'avg_correctionTime');
 
 %% Response time (Stim to Change in the sign of the velocity, or change in the direction of movement)
 % try
@@ -206,7 +209,7 @@ title('Response Time when too open');
 % Save
 avg_responseTime(trial,1) = avg_respTimeLow;
 avg_responseTime(trial,2) = avg_respTimeHigh;
-save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
+% save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime', 'avg_responseTime');
 
 %% Periods of time that subject's trace remains in the target range
 % try    % Fix this!
@@ -230,7 +233,7 @@ title('Time periods spent in the target range');
 % Save
 avg_time_inside = mean(inTime)
 avg_inTime(trial) = avg_time_inside;
-save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
+%save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime', 'avg_inTime');
 
 num_insidePeriods = length(inTime)
 

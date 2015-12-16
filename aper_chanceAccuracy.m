@@ -9,7 +9,9 @@ accuracyChance = zeros(1000,1);
 % used as the starting point
 entersTarget = find(data < high_boundary & data > low_boundary, 1); % + startSamp-1;
 
-dx = diff(data_interp(entersTarget:end));
+% Either use diff of the interp signal or tne non-interp signal:
+% dx = diff(data_interp(entersTarget:end));
+dx = diff(data(entersTarget:end)); % Using the non-interpolated data for the diff because it results in a more varied random walk
 pos_shuffled = zeros(length(dx)+1, 1000);
 
 for i=1:1000

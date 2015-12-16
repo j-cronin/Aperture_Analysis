@@ -26,25 +26,15 @@ Aper_time = (0:length(data)-1)/Fs;
 %% Downsampling
 % Want new sampling rate of 20 Hz
 Fs2 = 20;
-T2 = 1/Fs2;
 
-T11=round(T*10^8); % Create an integer number from the original sampling period
-T22=round(T2*10^8);
-m=factor(T22);
-l=factor(T11);
-M=cumprod(m(7:end));
-L=cumprod(l(7:end));
-M=M(end);
-L=L(end);
+% The following changes the sampling rate using matlab's resample:
+% [data_resamp, Fs2] = aper_downsampleGlove(data, Fs, Fs2);
+% t2 = (0:length(data_resamp)-1)/Fs2; % New time array
 
-data_resamp = resample(data, L, M, 100);
-% data_resamp = resample(data, [0:1/20:120-1/20], Fs2, L, M);
-t2 = (0:length(data_resamp)-1)/Fs2; % New time array
-
-% 'downsample' by only selecting points of change:
-% data_resamp = data([1; find(diff(data)~=0)+1]);
-% t2 = Aper_time([1; find(diff(data)~=0)+1]);
-
+% The following 'downsamples' by only selecting points of change (i.e., it
+% doesn't include values where the diff == 0):
+data_resamp = data([1; find(diff(data)~=0)+1]);
+t2 = Aper_time([1; find(diff(data)~=0)+1]);
 
 figure
 plot(Aper_time, data, '*', t2, data_resamp, 'o')
@@ -96,12 +86,10 @@ dx2_smoothed = conv(dx2, gauss, 'same');
 locs_movement=find(abs(dx2_smoothed)>0.5*10^-7);
 locs_movement=locs_movement+1; % CHECK THIS!
 % t2 = Aper_time;
-Fs2=Fs;
+% Fs2=Fs;
 
 dx1 = dx1_smoothed;
 dx2 = dx2_smoothed;
-
-
 
 %% Remove high frequency noise from data
 high_freq = 4; %Hz - get rid of frequencies above this value (~300ms reaction time...)
@@ -138,6 +126,7 @@ plot(t2,data_resamp,'g')
 plot(t2, data_smoothed, 'r')
 legend('data', 'resampled data', 'smoothed data')
 xlabel('time (sec)')
+
 %% Check the smoothed DATA against the un-smoothed
 figure
 plot(Aper_time, data); hold on; plot(Aper_time, data_smoothed, 'r');
@@ -163,10 +152,10 @@ ylabel('Aperture value'); xlabel('time (s)');
 
 %% dx2 threshold
 
-width_sec = 0.3; 
-windowWidth = int16(Fs2*width_sec);
+width_sec = 3; 
+windowWidth = floor(Fs2*width_sec);
 halfWidth = windowWidth/2;
-rect = ones(windowWidth,1)/windowWidth; % Normalize
+rect = repmat(1/windowWidth, 1, windowWidth); % Normalize
 moving_avg_dx2 = conv(abs(dx2), rect, 'same');
 
 % if mod(samps,2)==0 % if samps is even
@@ -180,9 +169,15 @@ locs_movement=find(abs(dx2)>thresh);
 locs_movement=locs_movement+1; 
 
 figure
-plot(t2(3:end), dx2, 'b')
+plot(t2(3:end), abs(dx2), 'b')
 hold on
 plot(t2(3:end), thresh, 'r')
+
+dx2_norm = zeros(size(dx2));
+dx2_norm(find((abs(dx2)>thresh)==1)) = abs(dx2)-thresh;
+
+figure
+plot(t2(3:end), dx2_norm)
 
 %% Establish where the stim changes state (i.e., times when the subject should respond)
 ITI = max(Stm0.data(:,11));
@@ -215,7 +210,7 @@ plot(Aper_time, data, 'b'); hold on
 plot(t2, data_smoothed, 'g')
 plot(Aper_time, Aper.data(startSampAper:endSampAper,2), 'r')
 plot(Aper_time, Aper.data(startSampAper:endSampAper,3), 'r')
-scatter(t2(movement==1), data_smoothed(movement==1), 8, 'filled', 'm');
+% scatter(t2(movement==1), data_smoothed(movement==1), 8, 'filled', 'm');
 
 starts_aper_samps = [floor(starts/Fs_stim*Fs); floor(ends/Fs_stim*Fs)];
 stimChange = zeros(size(data));

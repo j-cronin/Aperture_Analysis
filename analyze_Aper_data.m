@@ -13,22 +13,59 @@
 % then zoom in to see where the discontinuities occur. 
 % TO-DO: HARD CODE THE ABOVE!!
 
-calculateChanceAccuracy = 1;
-fileName = 'C:\Users\jcronin\Data\Subjects\ecb43e, April 2015\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-13';
-load(fileName);
-startTime = 38; %seconds
-endTime = 134; %seconds
-Aper_SamplingRate = Aper.info.SamplingRateHz;
-startSamp = floor(startTime*Aper_SamplingRate);
-endSamp = floor(endTime*Aper_SamplingRate);
-Aper_timeStep = 1/Aper_SamplingRate;
-Aper_time = 0:Aper_timeStep:Aper_timeStep*length(Aper.data(:,1))-Aper_timeStep;
+%% Plot subject trace figures
+trials = [2 5 7 8 9 10 12 13 15 16 17];
+sid = 'fca96e';
 
-SamplingRate = Stim.info.SamplingRateHz;
+for i=1:length(trials)
+    trialNum = num2str(trials(i));
+    fileName = strcat('C:\Users\jcronin\Data\Subjects\fca96e\data\d7\fca96e_Aperture\Matlab\Aperture-', trialNum);
+    load(fileName);
+    % startTime = 19; %seconds
+    % endTime = 138; %seconds
+    Aper_SamplingRate = Aper.info.SamplingRateHz;
+%     startSamp = floor(startTime*Aper_SamplingRate);
+%     endSamp = floor(endTime*Aper_SamplingRate);
+    startSamp = floor(startTime(i)*Aper_SamplingRate);
+    endSamp = floor(endTime(i)*Aper_SamplingRate);
+    Aper_timeStep = 1/Aper_SamplingRate;
+    Aper_time = 0:Aper_timeStep:Aper_timeStep*length(Aper.data(:,1))-Aper_timeStep;
+    SamplingRate = Stim.info.SamplingRateHz;
+    Stim_timeStep = 1/SamplingRate;
+    Stim_time = 0:Stim_timeStep:Stim_timeStep*length(Stim.data(:,1))-Stim_timeStep;
+    
+    % Plot the target space and aperture positions
+    figure()
+    subplot(2,1,1)
+    plot(Aper_time, Aper.data(:,1),'b')
+    hold on
+    plot(Aper_time, Aper.data(:,2),'r')
+    plot(Aper_time, Aper.data(:,3),'r')
+    xlabel('Time (s)');
+    ylabel('Hand Aperture Position');
+    legend('hand aperture', 'high target', 'low target');
+    title(strcat(sid, ' trace: Trial ', trialNum));
+    subplot(2,1,2)
+    plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp,1),'b')
+    hold on
+    plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp,2),'r')
+    plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp,3),'r')
 
-Stim_timeStep = 1/SamplingRate;
-Stim_time = 0:Stim_timeStep:Stim_timeStep*length(Stim.data(:,1))-Stim_timeStep;
-figure(2)
+end
+
+%% Plot the target space and aperture positions from start time to end time
+figure
+hold off
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 1),'b')
+hold on
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 2),'r')
+plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 3),'r')
+xlabel('Time (s)');
+ylabel('Hand Aperture Position');
+legend('hand aperture', 'high target', 'low target');
+
+%% Plot all of the stim information
+figure
 subplot(6,1,1)
 plot(Stim_time, Stim.data(:,1))
 ylabel('Stim 0')
@@ -48,50 +85,10 @@ subplot(6,1,6)
 plot(Stim_time, Stim.data(:,6))
 ylabel('Counter')
 
-% figure(3)
-% plot(Stim.data(:,1))
-% title('Stim 0');
-% 
-% figure(4)
-% plot(Stim.data(:,2))
-% title('Stim 1');
-% 
-% figure(5)
-% plot(Stim.data(:,5))
-% title('Stim Wave Used (post IZ2)');
-% 
-% figure(6)
-% plot(Stim.data(:,4))
-% title('Stim Wave to Use');
-%end
-
 %% Stim 0 calculations
 % amp = max(Stim.data(:,1));
 % neg_amp = min(Stim.data(:,1));
 %phase_duration_pos =
-
-
-%% Plot the target space and aperture positions
-figure()
-hold off
-plot(Aper_time, Aper.data(:,1),'b')
-hold on
-plot(Aper_time, Aper.data(:,2),'r')
-plot(Aper_time, Aper.data(:,3),'r')
-xlabel('Time (s)');
-ylabel('Hand Aperture Position');
-legend('hand aperture', 'high target', 'low target');
-
-%% Plot the target space and aperture positions from start time to end time
-figure(1)
-hold off
-plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 1),'b')
-hold on
-plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 2),'r')
-plot(Aper_time(startSamp:endSamp), Aper.data(startSamp:endSamp, 3),'r')
-xlabel('Time (s)');
-ylabel('Hand Aperture Position');
-legend('hand aperture', 'high target', 'low target');
 
 %% Compute the chance value
 if calculateChanceAccuracy == 1

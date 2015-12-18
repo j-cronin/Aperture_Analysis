@@ -4,11 +4,11 @@
 
 
 %%
-addpath('C:\Users\jcronin\Box Sync\Code\Matlab\DataGlove');
-addpath('C:\Users\jcronin\Box Sync\Code\Matlab\SigAnal');
+parpool(16)
+warning('off', 'all');
 
-% SIDS = {'ecb43e' 'fca96e' 'cdceeb'};
-SIDS = {'ecb43e'};
+SIDS = {'ecb43e' 'fca96e' 'cdceeb'};
+% SIDS = {'ecb43e'};
 
 %SIDS = SIDS(2);
 
@@ -17,9 +17,7 @@ for idx = 1:length(SIDS)
     
     switch(sid)
         case 'ecb43e'
-            wp = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\'; % write path
-            rp_matlab = 'C:\Users\jcronin\Data\Subjects\ecb43e\d7\Aperture_ecb43e\'; % read path for Matlab data (includes glove data)
-            rp = strcat(rp_matlab, 'Matlab, Aperture\Aperture_ecb43e-'); % read path TDT data
+            rp = strcat('../data/ecb43e/Aperture_ecb43e-');
             %'C:\Users\jcronin\Data\Subjects\ecb43e\d7\Aperture_ecb43e\Matlab, Aperture\Aperture_ecb43e-'; % read path TDT data
             trials = [4 5 6 8 9 10 11 12 13 14 15 16 18 19];
             practiceTrials = zeros(size(trials)); % 1: practice trial with straight beginning and then sine wave
@@ -44,9 +42,7 @@ for idx = 1:length(SIDS)
             badChans = [];
             
         case 'fca96e'
-            wp = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\'; % write path
-            rp_matlab = 'C:\Users\jcronin\Data\Subjects\fca96e\data\d7\fca96e_Aperture\'; % read path for Matlab data (includes glove data)
-            rp = strcat(rp_matlab, 'Matlab\Aperture-'); % read path TDT data
+            rp = strcat('../data/fca96e/Aperture-');
             trials = [2 5 7 8 9 10 12 13 15 16 17];
             practiceTrials = [1 0 0 0 0 0 1 1 1 1 0];
             trials_NV = [5 7 8 9 10 17]; % trials w/o visual feedback
@@ -65,9 +61,7 @@ for idx = 1:length(SIDS)
             stims = [4 5];
             badChans = [];
         case 'cdceeb'
-            wp = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\'; % write path
-            rp_matlab = 'C:\Users\jcronin\Data\Subjects\cdceeb (wrong-f3e511)\data\d14\Aperture_cdceeb\'; % read path for Matlab data (includes glove data)
-            rp = strcat(rp_matlab, 'Matlab\ApertureCheck-'); % read path TDT data
+            rp = strcat('../data/cdceeb/ApertureCheck-');
             trials = [1 2 3];
             practiceTrials = zeros(size(trials));
             trials_NV = [1 2 3]; % trials w/o visual feedback
@@ -103,7 +97,7 @@ for idx = 1:length(SIDS)
     chanceRsq = zeros(1, length(trials));
     std_chanceRsq = zeros(1, length(trials));
     
-    parfor i=8:9%trials
+    for i=1:length(trials)
         % Initialize
         trialNum = num2str(trials(i));
         fileName = strcat(rp, trialNum); % read path
@@ -130,21 +124,21 @@ for idx = 1:length(SIDS)
         low_boundary = Aper.data(startSampAper:endSampAper,3);
         
         % Get filtered signal and find the points of significant change in movement
-        [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime(i), endTime(i));
+%         [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime(i), endTime(i));
         
         % Accuracy:
         accuracy(i) = sum(data < high_boundary & data > low_boundary)/length(data);
         % Chance accuracy calculations:
-        [pos_shuffled, entersTarget, chanceAccuracy(i), std_chanceAccuracy(i)] = aper_chanceAccuracy(data, data_interp, high_boundary, low_boundary);
+        [pos_shuffled, entersTarget, chanceAccuracy(i), std_chanceAccuracy(i)] = aper_chanceAccuracy_par(data, high_boundary, low_boundary);
         
         % R^2
         center_boundary = (high_boundary(entersTarget:end) + low_boundary(entersTarget:end))./2;
         [rsq(i)] = lmrsquare(center_boundary, data(entersTarget:end));
         % Chance R^2 calculations:
-        [chanceRsq, std_chanceRsq] = rsquare_chance(center_boundary, pos_shuffled);
+        [chanceRsq(i), std_chanceRsq(i)] = rsquare_chance(center_boundary, pos_shuffled);
     end
     
     % Save
-    save_path = strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\', sid, '_accuracy');
-    save('save_path', 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'chanceRsq', 'std_chanceRsq');
+    save_path = strcat('analysis/', sid, '_accuracy');
+    save(save_path, 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'chanceRsq', 'std_chanceRsq');
 end

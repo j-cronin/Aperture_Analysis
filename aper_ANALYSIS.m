@@ -29,15 +29,15 @@ endTime = zeros(length(fca96e_trials), 1);
 % stem(endTime, max(Aper.data(:,2)), 'k')
 % title(strcat('Trial #: ', num2str(trialNum)))
 % 
-% startSampAper = floor(startTime*Fs_aper);
-% endSampAper = floor(endTime*Fs_aper);
-% data = Aper.data(startSampAper:endSampAper,1);
-% high_boundary = Aper.data(startSampAper:endSampAper,2);
-% low_boundary = Aper.data(startSampAper:endSampAper,3);
-% Aper_time2 = (0:length(data)-1)/Fs_aper;
-% 
-% startSampStim = floor(startTime*Fs_stim);
-% endSampStim = floor(endTime*Fs_stim);
+startSampAper = floor(startTime*Fs_aper);
+endSampAper = floor(endTime*Fs_aper);
+data = Aper.data(startSampAper:endSampAper,1);
+high_boundary = Aper.data(startSampAper:endSampAper,2);
+low_boundary = Aper.data(startSampAper:endSampAper,3);
+Aper_time2 = (0:length(data)-1)/Fs_aper;
+
+startSampStim = floor(startTime*Fs_stim);
+endSampStim = floor(endTime*Fs_stim);
 
 %% Find when the stim changes state
 ITI = max(Stm0.data(:,11));

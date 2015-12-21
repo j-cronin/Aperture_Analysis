@@ -47,7 +47,7 @@ responseTime_closedALLsubj = vertcat(responseTime_closedALLsubj, responseTime_cl
 save(strcat(pathToSave, sid, '_resultArrays_responseTiming'), 'responseTime_openALL','responseTime_closedALL');
 
 % Save the aggregated results from all of the subjects:
-save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\AggregatedResponseTimes', 'responseTime_openALLsubj','responseTime_closedALLsubj');
+save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\AggregatedResponseTimes2', 'responseTime_openALLsubj','responseTime_closedALLsubj');
 
 
 %% Response Timing histograms

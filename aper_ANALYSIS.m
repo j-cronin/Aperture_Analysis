@@ -52,20 +52,20 @@ stimChanges_aperSamps = [floor(stimChanges/Fs_stim*Fs_aper)];
 [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime, endTime);
 
 % % Figure
-figure
-plot(Aper_time2, data, 'b'); hold on
-plot(Aper_time2, high_boundary, 'r')
-plot(Aper_time2, low_boundary, 'r')
-scatter(Aper_time2(locs_movement), data(locs_movement), 8, 'filled', 'm');
-scatter(Aper_time2(stimChanges_aperSamps), data(stimChanges_aperSamps), 8, 'filled', 'k');
-legend('data', 'target boundary', 'target boundary', 'Significant movement changes', 'Stim state changes');
-ylabel('Aperture value'); xlabel('time (s)');
+% figure
+% plot(Aper_time2, data, 'b'); hold on
+% plot(Aper_time2, high_boundary, 'r')
+% plot(Aper_time2, low_boundary, 'r')
+% scatter(Aper_time2(locs_movement), data(locs_movement), 8, 'filled', 'm');
+% scatter(Aper_time2(stimChanges_aperSamps), data(stimChanges_aperSamps), 8, 'filled', 'k');
+% legend('data', 'target boundary', 'target boundary', 'Significant movement changes', 'Stim state changes');
+% ylabel('Aperture value'); xlabel('time (s)');
 
 %% Accuracy
-aper_accuracy = sum(data < high_boundary & data > low_boundary)/length(data);
-
-% Chance accuracy calculations:
-[pos_shuffled, entersTarget, chanceAccuracy, std_chanceAccuracy] = aper_chanceAccuracy(data, data_interp, high_boundary, low_boundary);
+% aper_accuracy = sum(data < high_boundary & data > low_boundary)/length(data);
+% 
+% % Chance accuracy calculations:
+% [pos_shuffled, entersTarget, chanceAccuracy, std_chanceAccuracy] = aper_chanceAccuracy(data, data_interp, high_boundary, low_boundary);
 
 %% Response timing
 [responseTime_open, responseTime_closed] = aper_responseTime(locs_movement, stimChanges_aperSamps, stimPks, Stm1, Fs_aper);
@@ -105,50 +105,50 @@ locs_reenters_closed = find(data(1:end-1)<low_boundary(1:end-1) & data(2:end)>lo
 % ylabel('count')
 
 %% Line fit, R^2
-% Predicted = target 'boundary'
-% Actual/observed = actual hand aperture value
-entersTarget = find(data < high_boundary & data > low_boundary, 1); % + startSamp-1;
-center_boundary = (high_boundary(entersTarget:end) + low_boundary(entersTarget:end))./2;
-data_entered = data(entersTarget:end);
-
-SSResid_center = sum((data_entered-center_boundary).^2);
-SSTo = sum((data_entered-mean(data_entered)).^2);
-r2_center = 1-SSResid_center/SSTo;
-
-SSResid_high = sum((data_entered-high_boundary(entersTarget:end)).^2);
-r2_high = 1-SSResid_high/SSTo;
-
-SSResid_low = sum((data_entered-low_boundary(entersTarget:end)).^2);
-r2_low = 1-SSResid_low/SSTo;
-
-% Determine the chance level of the R^2 value using the shuffled positions
-% from the accuracy chance calculation
-SSResid_center_chance = zeros(1, 1000);
-SSTo_chance = zeros(1, 1000);
-r2_center_chance = zeros(1, 1000);
-for i =1:1000
-    SSResid_center_chance(1, i) = sum((pos_shuffled(:,i)-center_boundary).^2);
-    SSTo_chance(1, i) = sum((pos_shuffled(:,i)-mean(pos_shuffled(:,i))).^2);
-    r2_center_chance(1, i) = 1-SSResid_center_chance(1, i)/SSTo_chance(1, i);
-end
-r2_chance = mean(r2_center_chance);
+% % Predicted = target 'boundary'
+% % Actual/observed = actual hand aperture value
+% entersTarget = find(data < high_boundary & data > low_boundary, 1); % + startSamp-1;
+% center_boundary = (high_boundary(entersTarget:end) + low_boundary(entersTarget:end))./2;
+% data_entered = data(entersTarget:end);
+% 
+% SSResid_center = sum((data_entered-center_boundary).^2);
+% SSTo = sum((data_entered-mean(data_entered)).^2);
+% r2_center = 1-SSResid_center/SSTo;
+% 
+% SSResid_high = sum((data_entered-high_boundary(entersTarget:end)).^2);
+% r2_high = 1-SSResid_high/SSTo;
+% 
+% SSResid_low = sum((data_entered-low_boundary(entersTarget:end)).^2);
+% r2_low = 1-SSResid_low/SSTo;
+% 
+% % Determine the chance level of the R^2 value using the shuffled positions
+% % from the accuracy chance calculation
+% SSResid_center_chance = zeros(1, 1000);
+% SSTo_chance = zeros(1, 1000);
+% r2_center_chance = zeros(1, 1000);
+% for i =1:1000
+%     SSResid_center_chance(1, i) = sum((pos_shuffled(:,i)-center_boundary).^2);
+%     SSTo_chance(1, i) = sum((pos_shuffled(:,i)-mean(pos_shuffled(:,i))).^2);
+%     r2_center_chance(1, i) = 1-SSResid_center_chance(1, i)/SSTo_chance(1, i);
+% end
+% r2_chance = mean(r2_center_chance);
 
 %% Compute average jerk after state change
-window = 5; % in seconds
-indeces = [];
-
-for i=1:length(stimChanges_aperSamps)
-    indeces = [indeces, (stimChanges_aperSamps(i):(stimChanges_aperSamps(i)+window))];
-end
-
-afterStateChange = unique(indeces);
-noStateChange = setdiff((1:length(data)), unique(indeces));
-
-dx3_stateChange = dx3(afterStateChange);
-dx3_noChange = dx3(noStateChange);
-
-mean(dx3_stateChange);
-mean(dx3_noChange);
+% window = 5; % in seconds
+% indeces = [];
+% 
+% for i=1:length(stimChanges_aperSamps)
+%     indeces = [indeces, (stimChanges_aperSamps(i):(stimChanges_aperSamps(i)+window))];
+% end
+% 
+% afterStateChange = unique(indeces);
+% noStateChange = setdiff((1:length(data)), unique(indeces));
+% 
+% dx3_stateChange = dx3(afterStateChange);
+% dx3_noChange = dx3(noStateChange);
+% 
+% mean(dx3_stateChange);
+% mean(dx3_noChange);
 
 %% Save all results
 % save(strcat(pathToSave, sid, '_AperANALYSIS_', trialNum), 'startTime', 'endTime', 'locs_movement',...
@@ -163,7 +163,12 @@ mean(dx3_noChange);
 %     'r2_center', 'r2_high', 'r2_low', 'r2_chance');
 
 %% Just save R^2 values to re-do
-save(strcat(pathToSave, sid, '_AperANALYSIS_R2_', trialNum),...
-    'r2_center', 'r2_high', 'r2_low', 'r2_chance');
+% save(strcat(pathToSave, sid, '_AperANALYSIS_R2_', trialNum),...
+%     'r2_center', 'r2_high', 'r2_low', 'r2_chance');
+
+%% Just save response timing values  
+save(strcat(pathToSave, sid, '_AperANALYSIS_Timing_', trialNum),...
+    'responseTime_open', 'responseTime_closed', 'correctionTime_open', 'correctionTime_closed');
+
 end
 

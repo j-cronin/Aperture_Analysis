@@ -1,4 +1,4 @@
-function [ responseTime_open, responseTime_closed  ] = aper_responseTime(locs_movement, stimChanges, stimPeaks, Stm1, Fs)
+function [ responseTime_open, responseTime_closed  ] = aper_responseTime(locs_movement, stimChanges, stimPeaks, Stm1, Fs, closedStimAmp)
 % aper_responseTime returns the response timing in miliseconds of the subject, defined
 % as the time between the onset of an error signal stim (i.e., the
 % beginning of a stimulus train that indicates that the subject is outside
@@ -25,7 +25,7 @@ for i=1:length(stimChanges_open)
 end
     
 % Now, outside of boundary because too closed:
-stimChanges_closed = stimChanges(stimPeaks(1:end-1)==max(Stm1.data(:,1)));
+stimChanges_closed = stimChanges(stimPeaks(1:end-1)==closedStimAmp);
 responseTime_closed = zeros(size(stimChanges_closed));
 for i=1:length(stimChanges_closed)
     try

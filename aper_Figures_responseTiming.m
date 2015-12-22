@@ -50,6 +50,31 @@ save(strcat(pathToSave, sid, '_resultArrays_responseTiming'), 'responseTime_open
 save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\AggregatedResponseTimes2', 'responseTime_openALLsubj','responseTime_closedALLsubj');
 
 
+%% SHOULDN'T HAVE TO USE THE ABOVE. INSTEAD:
+
+
+rp = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ResponseTimes\';
+SIDS = {'ecb43e' 'fca96e' 'cdceeb'};
+responseTime_openALL = [];
+responseTime_closedALL = [];
+
+for i = 1:length(SIDS)
+    sid = SIDS{i};
+    
+    load_path = strcat(rp, sid, '_ResponseTiming');
+    load(load_path);
+    
+    responseTime_open = cell2mat(responseTime_open);
+    responseTime_closed = cell2mat(responseTime_closed);
+    
+    responseTime_openALL = vertcat(responseTime_openALL, responseTime_open);
+    responseTime_closedALL = vertcat(responseTime_closedALL, responseTime_closed);
+    
+end
+% Save the aggregated results from all of the subjects:
+save('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ResponseTimes\AggregateResponseTimes', 'responseTime_openALL','responseTime_closedALL');
+
+
 %% Response Timing histograms
 responseTime_openALL = responseTime_openALLsubj;
 responseTime_closedALL = responseTime_closedALLsubj;

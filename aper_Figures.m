@@ -245,18 +245,22 @@ legend('state change','no state change')
 
 %% Not using:
 %% Response Timing histograms
-
+responseTime_openALLsubj = responseTime_openALL;
+responseTime_closedALLsubj = responseTime_closedALL;
+figure
+subplot(1,2,1)
 edges_open = 0:50:ceil(max(responseTime_openALLsubj)/50)*50;
-figure
 hist(responseTime_openALLsubj, edges_open) % Histogram of the response times in ms
-title(strcat(sid, ': Time after stim error (too open, no stim) to change in movement'));
-xlabel('response timing (ms)')
-ylabel('count')
+% title(strcat(sid, ': Time after stim error (too open, no stim) to change in movement'));
+title('Response Time')
+xlabel('Time delay (ms)')
+ylabel('Count')
 
+subplot(1,2,2)
 edges_closed = 0:50:ceil(max(responseTime_closedALLsubj)/50)*50;
-figure
 hist(responseTime_closedALLsubj, edges_closed) % Histogram of the response times in ms
-title(strcat(sid, ': Time after stim error (too closed, high intensity stim) to change in movement'));
-xlabel('response timing (ms)')
-ylabel('count')
+% title(strcat(sid, ': Time after stim error (too closed, high intensity stim) to change in movement'));
+title('Response Time')
+xlabel('Time delay (ms)')
+ylabel('Count')
 

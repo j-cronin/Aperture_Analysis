@@ -118,6 +118,7 @@ for i=1:length(fca96e_trials)
     %% Plv analysis
     badChans = Montage.BadChannels;
     fs = fs_wave;
+    data = bpsig;
     connectivityRHI_par
     
 end

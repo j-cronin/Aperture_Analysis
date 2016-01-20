@@ -15,7 +15,7 @@
 
 %% Plot subject trace figures
 trials = [2 5 7 8 9 10 12 13 15 16 17];
-sid = 'fca96e';
+sid = 'ecb43e';
 
 for i=1:length(trials)
     trialNum = num2str(trials(i));

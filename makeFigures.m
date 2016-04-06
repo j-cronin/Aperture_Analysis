@@ -1,9 +1,9 @@
 % make the figures
 catchTrial = 14; % NOTE: This will need to be changed depending on which is the catch trial!!!!!!
 
-load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_correctionTime.mat')
-load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_inTime.mat')
-load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data\ecb43e\ecb43e_avg_responseTime.mat')
+load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\ecb43e_avg_correctionTime.mat')
+load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\ecb43e_avg_inTime.mat')
+load('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\ecb43e\ecb43e_avg_responseTime.mat')
 
 avg_correctionTime(catchTrial, :) = NaN; % Change the catch trial values to NaN, since there really can't be a true correction time in the case of a catch since all of the stimulation is the same and there's no stim change to base the measurement off of
 correctionTimesLow = avg_correctionTime(4:end,1);

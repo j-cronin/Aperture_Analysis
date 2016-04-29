@@ -1,7 +1,15 @@
-function [ pos_shuffled, entersTarget, averageChanceAccuracy, std_chance] = aper_chanceAccuracy(data, data_interp, high_boundary, low_boundary)
-%Computes the chance accuracy value, starting from when subject first
-%enters the target range
-%   Detailed explanation goes here
+function [ pos_shuffled, entersTarget, averageChanceAccuracy, std_chance] = aper_chanceAccuracy(data, high_boundary, low_boundary)
+% Computes the chance accuracy value, starting from when subject first
+% enters the target range, using 1000 shuffles by drawing with replacement
+
+% Returns:
+% pos_shuffled: the 1000 different shuffled position vectors
+% entersTarget: the sample number at which the subject first enters the
+% target range
+% averageChanceAccuracy: the mean of all of the accuracies from the 1000
+% shuffled position vectors
+% std_chance: the mean of all of the accuracies from the 1000
+% shuffled position vectors
 
 accuracyChance = zeros(1000,1);
 
@@ -9,8 +17,7 @@ accuracyChance = zeros(1000,1);
 % used as the starting point
 entersTarget = find(data < high_boundary & data > low_boundary, 1); % + startSamp-1;
 
-% Either use diff of the interp signal or tne non-interp signal:
-% dx = diff(data_interp(entersTarget:end));
+% Diff of the data:
 dx = diff(data(entersTarget:end)); % Using the non-interpolated data for the diff because it results in a more varied random walk
 pos_shuffled = zeros(length(dx)+1, 1000);
 

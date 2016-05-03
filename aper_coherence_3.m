@@ -1,4 +1,4 @@
-function [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime, endTime);
+function [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime, endTime)
 %UNTITLED14 Summary of this function goes here
 %   Detailed explanation goes here
 

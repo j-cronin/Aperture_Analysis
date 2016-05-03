@@ -1,4 +1,4 @@
-function [locs_movement, data_interp, data_filt, dx3] = aper_coherence_3(Aper, Stim, startTime, endTime)
+function [locs_movement, aper_interp, aper_filt, dx3] = aper_coherence_3(aper_data, fs_aper)
 %UNTITLED14 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,35 +7,32 @@ addpath('C:\Users\jcronin\Code\Matlab\Numerical_Differentiation');
 addpath('C:\Users\jcronin\Code\Matlab\SigAnal');
 addpath('C:\Users\jcronin\Code\Matlab\Experiments\Aperture_Analysis\postprunedx3code');
 
-Fs = Aper.info.SamplingRateHz;
-T = 1/Fs;
-startSampAper = floor(startTime*Fs);
-endSampAper = floor(endTime*Fs);
-
-data = Aper.data(startSampAper:endSampAper,1);
-N=length(data);
-Aper_time = ((0:length(data)-1)/Fs)';
+%fs_aper = Aper.info.SamplingRateHz;
+% T = 1/fs_aper;
+% 
+% N=length(aper_data);
+Aper_time = ((0:length(aper_data)-1)/fs_aper)';
 
 %% Downsampling
 % The following 'downsamples' by only selecting points of change (i.e., it
 % doesn't include values where the diff == 0):
-data_resamp = data([1; find(diff(data)~=0)+1]);
-t2 = Aper_time([1; find(diff(data)~=0)+1])';
+aper_resamp = aper_data([1; find(diff(aper_data)~=0)+1]);
+t2 = Aper_time([1; find(diff(aper_data)~=0)+1])';
 % Interpolate the values at the original sampling points in Aper_time:
-data_interp = interp1(t2, data_resamp, Aper_time, 'pchip'); 
+aper_interp = interp1(t2, aper_resamp, Aper_time, 'pchip'); 
 
 % figure
-% plot(Aper_time, data)
+% plot(Aper_time, aper_data)
 % hold on
-% plot(Aper_time, data_interp, 'r')
+% plot(Aper_time, aper_interp, 'r')
 % xlabel('Time (s)')
 % ylabel('Signal')
 % legend('Original','Resampled and interpolated', 'Location','NorthWest')
 
-data_filt = glove_smooth(data_interp, Fs, 0.1, 20);
-dx1 = diff(glove_smooth(data_filt, Fs, 0.05, 3));
-dx2 = diff(glove_smooth(dx1, Fs, 0.15, 10));
-dx3 = diff(glove_smooth(dx2, Fs, 0.15, 10));
+aper_filt = glove_smooth(aper_interp, fs_aper, 0.1, 20);
+dx1 = diff(glove_smooth(aper_filt, fs_aper, 0.05, 3));
+dx2 = diff(glove_smooth(dx1, fs_aper, 0.15, 10));
+dx3 = diff(glove_smooth(dx2, fs_aper, 0.15, 10));
 
 % figure
 % subplot(3,1,1); plot(Aper_time(2:end), dx1); title('dx1')
@@ -52,21 +49,21 @@ dx3_locsp = removeifnot(dx2_locs, dx3_locs);
 locs_movement=[dx1_locs; dx3_locsp];
 
 % figure
-% plot(Aper_time, data_interp, 'b'); title('data')
+% plot(Aper_time, aper_interp, 'b'); title('aper_data')
 % hold on
-% plot(Aper_time, data_filt, 'r');
-% % scatter(Aper_time(locs_movementj), data_filtj(locs_movementj),'g')
-% % legend('data interpolated', 'filtered')
+% plot(Aper_time, aper_filt, 'r');
+% % scatter(Aper_time(locs_movementj), aper_filtj(locs_movementj),'g')
+% % legend('aper_data interpolated', 'filtered')
 % % plot(Aper_time(2:end), dx1j, 'r'); title('dx1')
 % % legend('derivatives filtered', 'zeros')
 % hold on
-% scatter(Aper_time(dx1_locs), data_interp(dx1_locs), 'r')
+% scatter(Aper_time(dx1_locs), aper_interp(dx1_locs), 'r')
 % % plot(Aper_time(3:end), dx2j, 'darkgreen'); title('dx2')
 % % hold on
-% % scatter(Aper_time(dx2_locsjp), data_interp(dx2_locsjp), 'k')
+% % scatter(Aper_time(dx2_locsjp), aper_interp(dx2_locsjp), 'k')
 % % % plot(Aper_time(4:end), dx3j, 'm'); title('dx3')
 % % % hold on
-% scatter(Aper_time(dx3_locsp), data_interp(dx3_locsp), 'm')
+% scatter(Aper_time(dx3_locsp), aper_interp(dx3_locsp), 'm')
 
 
 end

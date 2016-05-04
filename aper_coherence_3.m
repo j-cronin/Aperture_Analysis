@@ -29,6 +29,7 @@ aper_interp = interp1(t2, aper_resamp, Aper_time, 'pchip');
 % ylabel('Signal')
 % legend('Original','Resampled and interpolated', 'Location','NorthWest')
 
+% 3rd value is the minimum feature size:
 aper_filt = glove_smooth(aper_interp, fs_aper, 0.1, 20);
 dx1 = diff(glove_smooth(aper_filt, fs_aper, 0.05, 3));
 dx2 = diff(glove_smooth(dx1, fs_aper, 0.15, 10));

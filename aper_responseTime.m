@@ -1,9 +1,10 @@
-function [ responseTime_open, responseTime_closed  ] = aper_responseTime(locs_movement, stimChanges, stimPeaks, Stm1, Fs, closedStimAmp)
+function [ responseTime_open, responseTime_closed  ] = aper_responseTime(locs_movement, stimChanges, stimPeaks, Stm1, Fs, closedStimAmp, correctOnly)
 % aper_responseTime returns the response timing in miliseconds of the subject, defined
 % as the time between the onset of an error signal stim (i.e., the
 % beginning of a stimulus train that indicates that the subject is outside
 % of the target region) and the subject changing the direction of motion of
-% their hand
+% their hand. If the correctOnly variable = 1, then this will only return
+% response times of responses that were made in the correct direction.
 
 % If stim changes are outside of the boundary (i.e. stimPeaks are equal to
 % 0:too open, or the high intensity stim: too closed), count the samples

@@ -3,8 +3,8 @@ function [locs_movement, aper_interp, aper_filt, dx3] = aper_coherence_3(aper_da
 %   Detailed explanation goes here
 
 %% aper_coherence determines the time lagged coherence between the stimulations and the hand motion
-addpath('C:\Users\jcronin\Code\Matlab\Numerical_Differentiation');
-addpath('C:\Users\jcronin\Code\Matlab\SigAnal');
+%addpath('C:\Users\jcronin\Code\Matlab\Other\Numerical_Differentiation');
+%addpath('C:\Users\jcronin\Code\Matlab\SigAnal');
 addpath('C:\Users\jcronin\Code\Matlab\Experiments\Aperture_Analysis\postprunedx3code');
 
 %fs_aper = Aper.info.SamplingRateHz;

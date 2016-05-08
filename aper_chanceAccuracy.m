@@ -21,7 +21,7 @@ entersTarget = find(data < high_boundary & data > low_boundary, 1); % + startSam
 dx = diff(data(entersTarget:end)); % Using the non-interpolated data for the diff because it results in a more varied random walk
 pos_shuffled = zeros(length(dx)+1, 1000);
 
-for i=1:1000
+parfor i=1:1000
     pos_shuffled(:,i)= cumsum([data(entersTarget) dx(randi(length(dx), size(dx)))']); % drawing with replacement
   
     % Calculate the accuracy
@@ -32,11 +32,11 @@ averageChanceAccuracy = mean(accuracyChance);
 std_chance = std(accuracyChance); 
 
 %% Plot
-figure
-plot(pos_shuffled(:,1), 'b')
-hold on
-plot(high_boundary(entersTarget:end),'r')
-plot(low_boundary(entersTarget:end),'r')
-title('Shuffled position in blue');
+% figure
+% plot(pos_shuffled(:,1), 'b')
+% hold on
+% plot(high_boundary(entersTarget:end),'r')
+% plot(low_boundary(entersTarget:end),'r')
+% title('Shuffled position in blue');
 end
 

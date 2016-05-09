@@ -1,4 +1,4 @@
-function [ correctionTime_open, correctionTime_closed  ] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges, stimPeaks, Stm1, Fs)
+function [ correctionTime_open, correctionTime_closed  ] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges, stimPeaks, closedStimAmp, Fs)
 % aper_correctionTime determines the response timing of the subject, defined
 % as the time between the onset of an error signal stim (i.e., the
 % beginning of a stimulus train that indicates that the subject is outside
@@ -23,7 +23,7 @@ for i=1:length(stimChanges_open)
 end
 
 % Now, outside of boundary because too closed:
-stimChanges_closed = stimChanges(stimPeaks(1:end-1)==max(Stm1.data(:,1)));
+stimChanges_closed = stimChanges(stimPeaks(1:end-1)==closedStimAmp);
 correctionTime_closed = zeros(size(stimChanges_closed));
 for i=1:length(stimChanges_closed)
     try

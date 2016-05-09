@@ -5,7 +5,7 @@
 clear all, close all
 %% Enter information below:
 
-sid = 'fca96e';
+sid = 'cdceeb';
 % sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 comp = 'hyak'; % Other options: 'hyak' 'laptop' 'macademia'
 chance = 1; % Turn on or off whether or not you're trying to calculate the chance values

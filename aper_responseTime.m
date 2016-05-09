@@ -21,7 +21,7 @@ for i=1:length(stimChanges_open)
         index = find(locs_movement>stimChanges_open(i), 1);
         responseTime_open(i) = locs_movement(index) - stimChanges_open(i);
     catch
-        warning('No significant movement changes after the stim state change');
+        % warning('No significant movement changes after the stim state change');
         responseTime_open = responseTime_open(1:i-1);
         break
     end
@@ -35,7 +35,7 @@ for i=1:length(stimChanges_closed)
         index = find(locs_movement>stimChanges_closed(i), 1);
         responseTime_closed(i) = locs_movement(index) - stimChanges_closed(i);
     catch
-        warning('No significant movement changes after the stim state change');
+        % warning('No significant movement changes after the stim state change');
         responseTime_closed = responseTime_closed(1:i-1);
         break
     end
@@ -49,7 +49,7 @@ for i=1:length(stimChanges_in)
         index = find(locs_movement>stimChanges_in(i), 1);
         responseTime_in(i) = locs_movement(index) - stimChanges_in(i);
     catch
-        warning('No significant movement changes after the stim state change');
+        % warning('No significant movement changes after the stim state change');
         responseTime_in = responseTime_in(1:i-1);
         break
     end

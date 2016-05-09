@@ -1,0 +1,17 @@
+#! /bin/sh
+#PBS -N "aperAnalysis"
+#PBS -d /gscratch/gridlab/jcronin/aperture/aperture_analysis
+#PBS -l nodes=1 : ppn=16,mem=22gb,walltime=05:00:00
+## Send email when job ends:
+#PBS -M jcronin@u.washington.edu
+#PBS -m abe
+## Put the output from jobs into the below directory
+#PBS -o /gscratch/gridlab/jcronin/aperture/results
+## Put both the stderr and stdout into a single file
+#PBS -j oe
+
+module load matlab_2015b
+
+matlab -nosplash -nodisplay -r Process_ApertureData
+
+

@@ -137,6 +137,7 @@ chanceResponseTimes = cell(length(trials), 3, 1000);
 % for each calculation of the response times
 pos_shuffled = cell(length(trials), 1);
 
+%% 
 %% Loop through all trials for given subject and calculate: accuracy, R^2, and response times
 
 for i=1:length(trials) %9:9 (for testing good ecb43e trial)
@@ -352,7 +353,7 @@ for i=1:length(trials) %9:9 (for testing good ecb43e trial)
     locs_reenters_closed = find(data(1:end-1)<low_boundary(1:end-1) & data(2:end)>low_boundary(2:end))+1;
     
     % Get correction time in ms:
-    [correctionTime_open{i}, correctionTime_closed{i}] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges_aperSamps, stimPks, Stm1, fs_aper);
+    [correctionTime_open{i}, correctionTime_closed{i}] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges_aperSamps, stimPks, amp1, fs_aper);
 end    
 %% 
 % Save variables

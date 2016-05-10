@@ -5,23 +5,23 @@
 clear all, close all
 %% Enter information below:
 
-sid = 'cdceeb';
-% sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
+% sid = 'ecb43e';
+sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 comp = 'hyak'; % Other options: 'hyak' 'laptop' 'macademia'
-chance = 1; % Turn on or off whether or not you're trying to calculate the chance values
+chance = 1; % Turn on (1) or off (0) whether or not you're trying to calculate the chance values
 %% Computer specific info:
 
 switch(comp)
     case 'macademia'
         dataPath = 'C:\Users\jcronin\Data\Subjects\';
-        savePath = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\';
+        savePath = 'C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\';
         addpath('C:\Users\jcronin\Code\Matlab\SigAnal');
         addpath('C:\Users\jcronin\Code\Matlab\Experiments\Aperture_Analysis\postprunedx3code');
     case 'hyak'
         dataPath = '../data/';
         warning('off', 'all'); % Turn off warnings if running on hyak to speed up processing
         set(0,'DefaultFigureVisible','off'); % Suppress figure display when running on hyak
-        savePath = '../results/';
+        savePath = '../results/051016/';
         addpath('../SigAnal');
 %         addpath('/postprunedx3code');
         addpath(genpath(pwd));
@@ -36,8 +36,8 @@ switch(comp)
 end
 %% Start looping through subjects:
 
-% for ii=1:3
-%     sid = sids(ii,:);
+for ii=1:3
+    sid = sids(ii,:);
 
 %% Subject specific info:
 % filePath: the path to the .mat files (converted from Tanks) for each subject; 
@@ -97,15 +97,17 @@ end
 % accuracy and rsq (R^2) values for subject accuracy, average chance accuracy, 
 % and std deviations of the chance accuracies (run 1000 times)
 % 
-% responseTime: time from beginning of new stim (error) train to any 'significant 
-% change in motion'          CHECK THIS
+% responseTime: time (ms) from beginning of new stim (error) train to any 
+% 'significant change in motion'          CHECK THIS
 % 
 % responseTimeCorrect: time from beginning of new stim (error) train to any 
 % 'significant change in motion' that results in a desired correction (i.e. this 
 % is only the response times for when the subject correctly re-enters the target 
 % region) 
 % 
-% correctionTime: time from beginning of new stim (error) train to reentering 
+% 
+% 
+% correctionTime: time (ms) from beginning of new stim (error) train to reentering 
 % the target region
 % 
 % - Each of the above (response times and correction times) has two cells: 
@@ -140,7 +142,7 @@ pos_shuffled = cell(length(trials), 1);
 %% 
 %% Loop through all trials for given subject and calculate: accuracy, R^2, and response times
 
-for i=1:length(trials) %9:9 (for testing good ecb43e trial)
+for i=1:length(trials) %9:   9 (for testing good ecb43e trial)
     fileName = strcat(filePath, num2str(trials(i)));
     load(fileName);
     fs_aper = Aper.info.SamplingRateHz; % sampling rate of the stim data (Hz)
@@ -299,12 +301,14 @@ for i=1:length(trials) %9:9 (for testing good ecb43e trial)
 % The cell should remain empty for any catch trials
 
     % Response timing, in ms
-    [responseTime_open{i}, responseTime_closed{i}, responseTime_in{i}] = aper_responseTime(locs_movement, stimChanges_aperSamps, stimPks, fs_aper, amp0, amp1, 0);
+    % Use the last variable (0 or 1) to indicate whether the function should find just the first response time to the stim Change, or all of the responses (all=1)
+    [responseTime_open{i}, responseTime_closed{i}, responseTime_in{i}] = aper_responseTime(locs_movement, stimChanges_aperSamps, stimPks, fs_aper, amp0, amp1, 1);
     
     % Chance response timing calculations (use the same 1000 shuffled positions from accuracy & R^2 calculations):
     % Don't run on catch trial because we're doing a different control on the catch trial, plus there aren's stim start changes in catch, so we'd have to run this differently for that trial. 
     if trials(i) ~= catchTrial && chance
-        chanceResponseTimes(i,:,:) = aper_responseTime_chance( stimChanges_aperSamps, stimPks, entersTarget,  pos_shuffled{i}, fs_aper, amp0, amp1);
+        % Again, use the last variable (0 or 1) to indicate whether the function should find just the first response time to the stim Change, or all of the responses (all=1)
+        chanceResponseTimes(i,:,:) = aper_responseTime_chance( stimChanges_aperSamps, stimPks, entersTarget,  pos_shuffled{i}, fs_aper, amp0, amp1, 1);
     end
 %% 
 % Train response times from the start of each new stim train to the next 
@@ -331,11 +335,11 @@ for i=1:length(trials) %9:9 (for testing good ecb43e trial)
         temp=datasample(find(data>high_boundary),21);
         stimTrains_aperSamps = [stimTrains_aperSamps; temp];
         stimTrainPks = [stimTrainPks; zeros(21,1)];
-        [responseTimeTrains_open{i}, responseTimeTrains_closed{i}, responseTimeTrains_in{i}] = aper_responseTime(locs_movement, stimTrains_aperSamps, stimTrainPks, fs_aper, amp0, amp1, 0);
+        [responseTimeTrains_open{i}, responseTimeTrains_closed{i}, responseTimeTrains_in{i}] = aper_responseTime(locs_movement, stimTrains_aperSamps, stimTrainPks, fs_aper, amp0, amp1, 1);
     else
         % when it is the catch trial all of the stim trains are at the same amplitude, so we won't
         % try to classify them. Instead just pass the stim amp for the catch trials and return as the third output
-        [~, ~, responseTimeTrains_in{i}] = aper_responseTime(locs_movement, stimTrains_aperSamps, stimTrainPks, fs_aper, max(Ctch.data(:,1)), 0, 0);
+        [~, ~, responseTimeTrains_in{i}] = aper_responseTime(locs_movement, stimTrains_aperSamps, stimTrainPks, fs_aper, max(Ctch.data(:,1)), 0, 1);
     end
 %% 
 % Correct response times: those from the beginning of new stim (error) train 
@@ -355,13 +359,26 @@ for i=1:length(trials) %9:9 (for testing good ecb43e trial)
     % Get correction time in ms:
     [correctionTime_open{i}, correctionTime_closed{i}] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges_aperSamps, stimPks, amp1, fs_aper);
 end    
-%% 
-% Save variables
+%% Save variables
+% If the file already exists it will append a version number, and will always 
+% print out the final save path.  
 
-    savePath = strcat(savePath, sid);
-    save(savePath, 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'rsq2',...
-        'chanceRsq', 'std_chanceRsq', 'responseTime_open', 'responseTime_closed', 'responseTime_in',...
-        'responseTimeTrains_open', 'responseTimeTrains_closed', 'responseTimeTrains_in',...
-        'responseTimeCorrect_open', 'responseTimeCorrect_closed', 'correctionTime_open', 'correctionTime_closed',...
-        'chanceResponseTimes', 'pos_shuffled');
-% end
+savePath = strcat(savePath, sid);
+% Append version number to the file name if it already exists:
+if exist(strcat(savePath, '.mat'), 'file')~=0 % so if it does exist, append number
+    temp=savePath;
+    version=2;
+    while exist(strcat(temp, '.mat'), 'file')~=0
+        temp = strcat(savePath, '-v', num2str(version));
+        version=version + 1;
+    end
+    savePath=temp;
+end
+print(savePath);
+save(savePath, 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'rsq2',...
+    'chanceRsq', 'std_chanceRsq', 'responseTime_open', 'responseTime_closed', 'responseTime_in',...
+    'responseTimeTrains_open', 'responseTimeTrains_closed', 'responseTimeTrains_in',...
+    'responseTimeCorrect_open', 'responseTimeCorrect_closed', 'correctionTime_open', 'correctionTime_closed',...
+    'chanceResponseTimes', 'pos_shuffled');
+
+end

@@ -1,4 +1,4 @@
-function [ chanceResponseTimes ] = aper_responseTime_chance( stimChanges_aperSamps, stimPks, entersTarget,  pos_shuffled, fs_aper, amp0, amp1)
+function [ chanceResponseTimes ] = aper_responseTime_chance( stimChanges_aperSamps, stimPks, entersTarget,  pos_shuffled, fs_aper, amp0, amp1, allLocs)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -14,7 +14,7 @@ responseTime_in = cell(1,1,size(pos_shuffled,2));
 parfor ind = 1:size(pos_shuffled,2)
     % find significant changes in movement for each random walk:
     [chanceRT_movement_locs, ~, ~, ~] = aper_coherence_3(pos_shuffled(:,ind), fs_aper);
-    [ responseTime_open{ind}, responseTime_closed{ind}, responseTime_in{ind}] = aper_responseTime(chanceRT_movement_locs, chanceStimChanges, chanceStimPks, fs_aper, amp0, amp1, 0);
+    [ responseTime_open{ind}, responseTime_closed{ind}, responseTime_in{ind}] = aper_responseTime(chanceRT_movement_locs, chanceStimChanges, chanceStimPks, fs_aper, amp0, amp1, allLocs);
 end
 chanceResponseTimes = [responseTime_open, responseTime_closed, responseTime_in];
 end

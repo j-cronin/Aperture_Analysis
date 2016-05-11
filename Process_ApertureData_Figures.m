@@ -5,7 +5,8 @@ sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 
 for ii=1:1
     sid = sids(ii,:);
-    load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\', sid))
+    %load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\', sid))
+    load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))
     
     switch(sid)
         case 'fca96e'
@@ -121,11 +122,9 @@ for ii=1:1
         subplot(2,3,6)
         % Ignore the responseTimeTrains_in for the catch trial (if it is a
         % catch trial)
-        temp=find(trials==catchTrial); % This will be empty and not affect matrix if there's no catch
-        temp2=zeros(size(trials));
-        temp2(temp)=1;
-        responseTimeTrains_in_NoCatch = responseTimeTrains_in(~temp2);
-        h=histogram(cell2mat(responseTimeTrains_in_NoCatch(T(~temp2))));
+        CT=(trials==catchTrial); % This will be all zeros and not affect matrix if there's no catch
+        responseTimeTrains_in_NoCatch = responseTimeTrains_in(~CT);
+        h=histogram(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))));
         h.BinWidth=50; h.BinLimits=[0 1500];
         title('Stim train starts, in')
         
@@ -199,7 +198,7 @@ for ii=1:1
             'support','positive', 'function', 'pdf', 'bandwidth', width);
         plot(xi,f)
         
-        [f, xi] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~temp2))),...
+        [f, xi] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
             'support','positive', 'function', 'pdf', 'bandwidth', width);
         plot(xi,f)
         
@@ -246,7 +245,7 @@ for ii=1:1
             'support','positive', 'function', 'pdf');
         plot(xi,f)
         
-        [f, xi, bw(7)] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~temp2))),...
+        [f, xi, bw(7)] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
             'support','positive', 'function', 'pdf');
         plot(xi,f)
         

@@ -3,7 +3,7 @@
 clear all, close all
 sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 
-for ii=1:1
+for ii=3:3
     sid = sids(ii,:);
     %load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\', sid))
     load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))
@@ -132,15 +132,15 @@ for ii=1:1
         figure
         subplot(1,3,1)
         h=histogram(cell2mat(reshape(chanceResponseTimes(T,1,:), [], 1)));
-        h.BinWidth=50; h.BinLimits=[0 1500];
+        h.BinWidth=50; %h.BinLimits=[0 1500];
         title(['Response times: ', sid, ' ', type, sprintf('\nRandom walk response times, open')]);
         subplot(1,3,2)
         h=histogram(cell2mat(reshape(chanceResponseTimes(T,2,:), [], 1)));
-        h.BinWidth=50; h.BinLimits=[0 1500];
+        h.BinWidth=50; %h.BinLimits=[0 1500];
         title('Random walk response times, closed')
         subplot(1,3,3)
         h=histogram(cell2mat(reshape(chanceResponseTimes(T,3,:), [], 1)));
-        h.BinWidth=50; h.BinLimits=[0 1500];
+        h.BinWidth=50; %h.BinLimits=[0 1500];
         title('Random walk response times, in')
         
         figure
@@ -190,33 +190,35 @@ for ii=1:1
             'support','positive', 'function', 'pdf', 'bandwidth', width);
         plot(xi,f, 'LineWidth', 2)
         
-        [f, xi] = ksdensity(cell2mat(responseTimeTrains_open(T)),...
-            'support','positive', 'function', 'pdf', 'bandwidth', width);
-        plot(xi,f)
-        
-        [f, xi] = ksdensity(cell2mat(responseTimeTrains_closed(T)),...
-            'support','positive', 'function', 'pdf', 'bandwidth', width);
-        plot(xi,f)
-        
-        [f, xi] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
-            'support','positive', 'function', 'pdf', 'bandwidth', width);
-        plot(xi,f)
-        
-        % Response times to catch trial, if there was one
-        if catchTrial % catchTrail is 0 if there wasn't one
-            [f, xi] = ksdensity(responseTimeTrains_in{catchTrial},...
-                'support','positive', 'function', 'pdf', 'bandwidth', width);
-            plot(xi,f)
-            legend('chance response times, all', 'stim state changes, open',...
-                'stim state changes, closed', 'stim state changes, in',...
-                'train starts, open', 'train starts, closed', 'train starts, in', 'catch trial')
-        else % set legend
-            legend('chance response times, all', 'stim state changes, open',...
-                'stim state changes, closed', 'stim state changes, in',...
-                'train starts, open', 'train starts, closed', 'train starts, in')
-        end
-        
-        xlim([0 1500])
+%         [f, xi] = ksdensity(cell2mat(responseTimeTrains_open(T)),...
+%             'support','positive', 'function', 'pdf', 'bandwidth', width);
+%         plot(xi,f)
+%         
+%         [f, xi] = ksdensity(cell2mat(responseTimeTrains_closed(T)),...
+%             'support','positive', 'function', 'pdf', 'bandwidth', width);
+%         plot(xi,f)
+%         
+%         [f, xi] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
+%             'support','positive', 'function', 'pdf', 'bandwidth', width);
+%         plot(xi,f)
+%         
+%         % Response times to catch trial, if there was one
+%         if catchTrial % catchTrail is 0 if there wasn't one
+%             [f, xi] = ksdensity(responseTimeTrains_in{catchTrial},...
+%                 'support','positive', 'function', 'pdf', 'bandwidth', width);
+%             plot(xi,f)
+%             legend('chance response times, all', 'stim state changes, open',...
+%                 'stim state changes, closed', 'stim state changes, in',...
+%                 'train starts, open', 'train starts, closed', 'train starts, in', 'catch trial')
+%         else % set legend
+%             legend('chance response times, all', 'stim state changes, open',...
+%                 'stim state changes, closed', 'stim state changes, in',...
+%                 'train starts, open', 'train starts, closed', 'train starts, in')
+%         end
+        legend('chance response times, all', 'stim state changes, open',...
+                'stim state changes, closed', 'stim state changes, in')
+            
+        xlim([0 500])
         title(['Response times: ', sid, ' ', type, sprintf('\nBandwidth = '), num2str(width)])
         
         %% Response times but plotted with smoothed kernel rather than histograms, allowing algorithm to choose bandwidth     
@@ -237,34 +239,37 @@ for ii=1:1
             'support','positive', 'function', 'pdf');
         plot(xi,f, 'LineWidth', 2)
         
-        [f, xi, bw(5)] = ksdensity(cell2mat(responseTimeTrains_open(T)),...
-            'support','positive', 'function', 'pdf');
-        plot(xi,f)
+%         [f, xi, bw(5)] = ksdensity(cell2mat(responseTimeTrains_open(T)),...
+%             'support','positive', 'function', 'pdf');
+%         plot(xi,f)
+%         
+%         [f, xi, bw(6)] = ksdensity(cell2mat(responseTimeTrains_closed(T)),...
+%             'support','positive', 'function', 'pdf');
+%         plot(xi,f)
+%         
+%         [f, xi, bw(7)] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
+%             'support','positive', 'function', 'pdf');
+%         plot(xi,f)
+%         
+%         % Response times to catch trial, if there was one
+%         if catchTrial % catchTrail is 0 if there wasn't one
+%             [f, xi, bw(8)] = ksdensity(responseTimeTrains_in{catchTrial},...
+%                 'support','positive', 'function', 'pdf');
+%             plot(xi,f)
+%             legend('chance response times, all', 'stim state changes, open',...
+%                 'stim state changes, closed', 'stim state changes, in',...
+%                 'train starts, open', 'train starts, closed', 'train starts, in', 'catch trial')
+%         else % set legend
+%             legend('chance response times, all', 'stim state changes, open',...
+%                 'stim state changes, closed', 'stim state changes, in',...
+%                 'train starts, open', 'train starts, closed', 'train starts, in')
+%         end
         
-        [f, xi, bw(6)] = ksdensity(cell2mat(responseTimeTrains_closed(T)),...
-            'support','positive', 'function', 'pdf');
-        plot(xi,f)
-        
-        [f, xi, bw(7)] = ksdensity(cell2mat(responseTimeTrains_in_NoCatch(T(~CT))),...
-            'support','positive', 'function', 'pdf');
-        plot(xi,f)
-        
-        % Response times to catch trial, if there was one
-        if catchTrial % catchTrail is 0 if there wasn't one
-            [f, xi, bw(8)] = ksdensity(responseTimeTrains_in{catchTrial},...
-                'support','positive', 'function', 'pdf');
-            plot(xi,f)
-            legend('chance response times, all', 'stim state changes, open',...
-                'stim state changes, closed', 'stim state changes, in',...
-                'train starts, open', 'train starts, closed', 'train starts, in', 'catch trial')
-        else % set legend
-            legend('chance response times, all', 'stim state changes, open',...
-                'stim state changes, closed', 'stim state changes, in',...
-                'train starts, open', 'train starts, closed', 'train starts, in')
-        end
-        
-        xlim([0 1500])
-        title(['Response times: ', sid, ' ', type, sprintf('\nBandwidth = choosen for each fxn by ksdensity'), num2str(bw)])
+        legend('chance response times, all', 'stim state changes, open',...
+                'stim state changes, closed', 'stim state changes, in')
+            
+        xlim([0 500])
+        title(['Response times: ', sid, ' ', type, sprintf('\nBandwidth = choosen for each fxn by ksdensity\n'), num2str(bw)])
         
     end
 end

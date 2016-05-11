@@ -360,22 +360,21 @@ for i=1:length(trials) %9:   9 (for testing good ecb43e trial)
     [correctionTime_open{i}, correctionTime_closed{i}] = aper_correctionTime(locs_reenters_open, locs_reenters_closed, stimChanges_aperSamps, stimPks, amp1, fs_aper);
 end    
 %% Save variables
-% If the file already exists it will append a version number, and will always 
-% print out the final save path.  
+% If the file already exists it will append a version number  
 
-savePath = strcat(savePath, sid);
+saveFile = strcat(savePath, sid);
 % Append version number to the file name if it already exists:
-if exist(strcat(savePath, '.mat'), 'file')~=0 % so if it does exist, append number
-    temp=savePath;
+if exist(strcat(saveFile, '.mat'), 'file')~=0 % so if it does exist, append number
+    temp=saveFile;
     version=2;
     while exist(strcat(temp, '.mat'), 'file')~=0
-        temp = strcat(savePath, '-v', num2str(version));
+        temp = strcat(saveFile, '-v', num2str(version));
         version=version + 1;
     end
-    savePath=temp;
+    saveFile=temp;
 end
-print(savePath);
-save(savePath, 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'rsq2',...
+
+save(saveFile, 'startTime', 'endTime', 'accuracy', 'chanceAccuracy', 'std_chanceAccuracy', 'rsq', 'rsq2',...
     'chanceRsq', 'std_chanceRsq', 'responseTime_open', 'responseTime_closed', 'responseTime_in',...
     'responseTimeTrains_open', 'responseTimeTrains_closed', 'responseTimeTrains_in',...
     'responseTimeCorrect_open', 'responseTimeCorrect_closed', 'correctionTime_open', 'correctionTime_closed',...

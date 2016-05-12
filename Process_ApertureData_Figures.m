@@ -3,7 +3,7 @@
 clear all, close all
 sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 
-for ii=3:3
+for ii=2:2
     sid = sids(ii,:);
     %load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\', sid))
     load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))

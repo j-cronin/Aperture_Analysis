@@ -32,7 +32,7 @@ for i=9:9 %length(fca96e_trials)
     fs_wave = wave.info.SamplingRateHz; % sampling rate of the wave data (Hz)
     fs_aper = aper.info.SamplingRateHz; % sampling rate of the stim data (Hz)
     t_aper = (0:1:length(aper.data(:,1))-1)/fs_aper; % stim timing (s)
-    break
+%     break
     if fca96e_practiceTrials(i) == 1
         [startTime, endTime] = aper_startANDendTimes(aper.data(:,3), t_aper, 'yes');
     elseif fca96e_practiceTrials(i) == 0
@@ -223,11 +223,11 @@ for i=9:9 %length(fca96e_trials)
     burstStarts = burstStarts - presamps;
     
     % Visualize the burst starts and stops over the ECoG data
-    %     figure(6)
-    %     plot(t_wave, ecog(:,1),'k')
-    %     hold on, scatter(burstStarts/fs_wave, zeros(size(burstStarts)), 'g')
-    %     scatter(burstEnds/fs_wave, zeros(size(burstEnds)), 'r')
-    %     xlim([20.1 20.5]) % To zoom in
+        figure(6)
+        plot(t_wave, ecog(:,1),'k')
+        hold on, scatter(burstStarts/fs_wave, zeros(size(burstStarts)), 'g')
+        scatter(burstEnds/fs_wave, zeros(size(burstEnds)), 'r')
+        xlim([20.1 20.5]) % To zoom in
     
     % Extract neural data between each burst, don't consider the ECoG
     % activity after the final burst:

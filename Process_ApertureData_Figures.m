@@ -4,7 +4,7 @@
 clear all, close all
 sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
 
-for ii=2:2
+for ii=3:3
     sid = sids(ii,:);
     %load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\050616, for reviews\', sid))
     load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))
@@ -277,10 +277,10 @@ end
 
 %% This will plot the subject traces
 sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
-for ii=1:3
+for ii=3:3
     sid = sids(ii,:);
     load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))
-    figs =[9];
+    figs =[1 2 3];
     h=figure('position', [0, 0, 2070, 1059]);
     %%
     count=1;
@@ -311,7 +311,7 @@ for ii=1:3
         stimI = Stim.data(startSampStim:endSampStim, 4); % This is the stimulation current waveform that was set
         stimV= Stim.data(startSampStim:endSampStim, 5); % This is the stimulation voltage as monitored during delivery at the IZ
         % Times:
-        t_aper = (0:1:length(data)-1)/fs_aper; % This was defined previously over the entire time range for use in the aper_startANDendTimes function; now redefining over just the period of interest
+        t_aper = (0:length(data)-1)/fs_aper; % This was defined previously over the entire time range for use in the aper_startANDendTimes function; now redefining over just the period of interest
         t_stim = (0:length(stimI)-1)/fs_stim; % stim timing (s), starting from the starting Stim (armed) sample)
         
         
@@ -329,7 +329,7 @@ for ii=1:3
         set(ax, 'box', 'off');
         ax.YLim=[min(data)-0.1 max(data)+0.1];
         set(ax, 'Ytick', 0:0.5:1);
-        set(gca, 'XLim',[0 130])
+        set(gca, 'XLim',[0 180])
         
         subplot(length(figs)*3,1, count+2)
         ax=gca;
@@ -341,7 +341,7 @@ for ii=1:3
         ax.XMinorTick='on';
         ylabel('Current (mA)')
         set(ax, 'box', 'off');
-        set(gca, 'XLim',[0 130])
+        set(gca, 'XLim',[0 180])
         
         count=count+3;
     end

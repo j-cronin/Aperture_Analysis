@@ -1,0 +1,605 @@
+<mujoco model="Adroit Glove Calib">
+	<compiler 	uniquevertex="false" 
+				inertiafromgeom="true" 
+				settotalmass="15" 
+				meshdir ="..\Adroit_sim(0.72)\Meshes\"
+				strippath="false"
+				coordinate="local" 
+				angle="radian"
+				/>
+	
+	<size 	njmax="500"
+			nlmax="500"
+			njnt_user="1"
+			nstack="6000000"
+			nuserdata="5"/>
+			
+	<option	timestep="0.001"
+			s_compliance ="1 1"
+			integrator="implicit"
+			viscosity="0"
+			iterations="20"
+			collisionmode="pair">
+			<disable clampvel="true"/>
+	</option>
+
+	<default>
+		<joint islimited="true" makeactuator="false"  damping="0.005" armature=".001"  mindist="0.01" maxvel="10" timeconst="0.01"/>
+		
+		<geom defset="0" friction="1 0.1 0.1" rgba="0.7 0.7 0 1" mindist="0.001" compliance="0.0001" contype="0" conaffinity="0"/>
+		<geom defset="1" friction="1 0.1 0.1" rgba=".4 .5 .6 .5" mindist="0.001" compliance="0.0001" contype="1" conaffinity="0" group="0"/> <!--collission geoms-->
+		<geom defset="2" rgba="0.8 0.2 0.1 0.4" group="2" contype="0" conaffinity="0"/> <!--wrap geoms-->
+		
+		<!--Meshes-->
+		<geom defset="3" group="1" contype="0" conaffinity="0" mindist="0.001" rgba="1 0.5 0 1"/>
+		<mesh defset="3" scale="0.001 0.001 0.001"/>	
+		
+		<tendon makeactuator="false" islimited="true" timeconst="0.01"/>
+		
+		<!--Joint Motors --> 
+		<!--<act-general forcerange="-1 1" dyntype="none" trntype="joint" gaintype="fixed" dynprm="0 0" trnprm="1" gainprm="1 0" />-->
+		
+		<!--Tendon Motors--> 
+		<act-general isforcelimited="true" trntype="tendon" forcerange="-37.2 0" gainprm="-1" />
+		
+		<!--Pneumatic tendons--> 
+		<!--<actuator dyntype="none" range="0 10" trntype="tendon" gaintype="fixed" gainprm="600 0" dynprm="101325.0000   500000.0000 0.7807 0.6885 8.2899 -0.9869 -5.8201 20.1557 0.4177 0.0100"/>-->
+	</default>
+		
+	<contactpair defaultstate="true">
+		<!--Distals with Distals-->
+		<enable geom1="C_ffdistal" geom2="C_thdistal" condim="1"/>	
+		<enable geom1="C_mfdistal" geom2="C_thdistal" condim="1"/>	
+		<enable geom1="C_rfdistal" geom2="C_thdistal" condim="1"/>	
+		<enable geom1="C_lfdistal" geom2="C_thdistal" condim="1"/>	
+		<enable geom1="C_mfdistal" geom2="C_ffdistal" condim="1"/>	
+		<enable geom1="C_rfdistal" geom2="C_mfdistal" condim="1"/>	
+		<enable geom1="C_lfdistal" geom2="C_rfdistal" condim="1"/>	
+
+		<!--Proximals with Proximals-->
+		<enable geom1="C_mfproximal" geom2="C_ffproximal" condim="1"/>	
+		<enable geom1="C_rfproximal" geom2="C_mfproximal" condim="1"/>	
+		<enable geom1="C_lfproximal" geom2="C_rfproximal" condim="1"/>	
+		
+		<!--little finger -->
+		<enable geom1="C_lfdistal" geom2="C_rfmiddle" condim="1"/>	
+		<enable geom1="C_lfdistal" geom2="C_mfmiddle" condim="1"/>	
+		<enable geom1="C_lfmiddle" geom2="C_rfmiddle" condim="1"/>
+	</contactpair>
+	
+	<!-- ======= Ground ======= -->
+    <body>
+        <geom name="ground" type="plane" pos="1 0 0" rgba="1 1 1 1" size="10 10 10"/>
+
+		
+		<!-- ======= Forearm/ Hand Actuation ======= -->
+		<body name="forearm" pos="0 0 .2" quat="0.6266 0.3276 0.3276 0.6266">
+			<inertial pos="0.001 -0.002 0.098" quat="0.982 -0.016 0.000 -0.188" mass="4" diaginertia="0.541 0.541 0.034" />
+			<mesh defset="3" name="V_forearm"  file="forearm_Cy_PlateAsmbly(muscle cone).stl"/>
+			<geom defset="1" name="C_forearm0" type="cylinder" pos="0 0 0.055" size=".112 .065"/>
+			<geom defset="1" name="C_forearm1" type="capsule" pos="0 0 0.25" size=".05 .08"/>
+			<site name="S_CY36" pos=" 0.034 -0.023 0.123" group="0" />
+			<site name="S_CY38" pos="-0.036  0.009 0.123" group="0" />
+			<site name="S_CY37" pos="-0.015 -0.037 0.123" group="0" />
+			<site name="S_CY39" pos=" 0.007  0.037 0.123" group="0" />
+			
+			
+			<!-- ======= Wrist ======= -->
+			<body name="wrist" pos="0 0 0.396">
+				<inertial pos="0.003 0.000 0.016" quat="0.504 0.496 0.495 0.504" mass="0.3" diaginertia="0.001 0.001 0.001" />
+				<joint name="WRJ1" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.524 0.175" maxvel="2" damping=".01" armature=".005" user="1123"/>
+				<mesh defset="3" name="V_wrist" file="wrist.stl"/>
+				<geom defset="1" name="C_wrist" type="cylinder" pos="0 0 0"  quat=".707 .707 0 0" size=".015 .022"/>
+				<site name="S_WRJ1l" pos=" 0.0380 0 0.01625" group="0"/>
+				<site name="S_WRJ1r" pos="-0.0326 0 0.01625" group="0"/>
+				<site name="S_WRJ0d" pos="0.000 -.018 0.000" group="0"/>
+				<site name="S_WRJ0u" pos="0.000 0.018 0.000" group="0"/>
+				
+				
+				
+				<!-- ======= Palm ======= -->
+				<body name="palm" pos="0 0 0.034">
+					<inertial pos="0.006 -0.000 0.036" quat="0.716 0.044 0.075 0.693" mass="0.3" diaginertia="0.001 0.001 0.001" />
+					<joint name="WRJ0" type="hinge" pos="0 0 0" axis="1 0 0" range="-0.785 0.611" maxvel="2" damping=".01" armature=".005" user="1122"/>
+					<mesh defset="3" name="V_palm" file="palm.stl" rgba="0.3 0.3 0.3 .7"/>
+					<geom defset="1" name="C_palm0" type="box" pos="0.011 0 0.038" size=".032 .0111 .049" contype="0"/>
+					<geom defset="1" name="C_palm1" type="box" pos="-.032 0 0.014" size=".011 .0111 .025" contype="0"/>
+					<geom defset="2" name="W_WRJ0" type="sphere" pos="0 0 0" quat="0.707 0 0.707 0" size="0.018"/>
+					<site name="I_WRJ0"  pos="0.000 0.000 0.019" group="0"/>
+					<site name="F_WRJ0d" pos="0.000 -.019 0.000" group="0"/>
+					<site name="F_WRJ0u" pos="0.000 0.019 0.000" group="0"/>
+					<site name="M_8" 	 pos="0.034 0.013 0.075" group="2" user="1008"/>
+					<site name="M_9" 	 pos="-.011 0.013 0.075" group="2" user="1009"/>
+					
+					
+					
+					<!-- ======= First Finger ======= -->
+					<body name="ffknuckle" pos="0.033 0 0.095">
+						<inertial pos="-0.000 0.000 0.000" quat="0.520 0.854 0.006 -0.003" mass="0.008" diaginertia="0.00001 0.00001 0.00001"/>
+						<joint name="FFJ3" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.436 0.436"  user="1103"/>
+						<mesh defset="3" name="V_ffknuckle" file="knuckle.stl"/>
+						<!--Proximal-->
+						<body name="ffproximal" pos="0 0 0">
+							<inertial pos="0.000 0.000 0.023" quat="0.707 -0.004 0.004 0.707" mass="0.014" diaginertia="0.00001 0.00001 0.00001"/>
+							<joint name="FFJ2" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1102"/>
+							<mesh defset="3" name="V_ffproximal"file="F3.stl"/>
+							<geom defset="1" name="C_ffproximal" type="capsule" pos="0 0 .0225" size=".01 .0225"/>
+							<site name="M_11" 	 	pos="0.000 0.013 0.025" 	group="2" 	user="1011"/>
+							<!--middle-->
+							<body name="ffmiddle" pos="0 0 0.045">
+								<inertial pos="-0.000 -0.000 0.011" quat="0.707 0.000 -0.000 0.707" mass="0.012" diaginertia="0.00001 0.00001 0.00001"/>
+								<joint name="FFJ1" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1101"/>
+								<mesh defset="3" name="V_ffmiddle" file="F2.stl"/>
+								<geom defset="1" name="C_ffmiddle" type="capsule" pos="0 0 .0125" size=".00805 .0125"/>
+								<!--distal-->
+								<body name="ffdistal" pos="0 0 0.025">
+									<inertial pos="0 -0.000 0.015" quat="0.707 -0.003 0.003 0.707" mass="0.010" diaginertia="0.00001 0.00001 0.00001"/>
+									<joint name="FFJ0" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1100"/>
+									<mesh defset="3" name="V_ffdistal" pos="0 0 .001" file="F1.stl"/>
+									<geom defset="1" name="C_ffdistal" type="capsule" pos="0 0 .012" size=".00705 .012"/>
+									<site name="M_10" 		pos="0.000 0.013 0.026"	group="2"	user="1010"/>
+									<site name="S_fftip" 	pos="0.000 0 0.026"	group="1" user="2001"/>
+								</body>
+							</body>
+						</body>
+					</body>
+					
+					
+					
+					<!-- ======= Middle Finger ======= -->
+					<body name="mfknuckle" pos="0.011 0 0.099">
+						<inertial pos="-0.000 0.000 0.000" quat="0.520 0.854 0.006 -0.003" mass="0.008" diaginertia="0.00001 0.00001 0.00001"/>
+						<joint name="MFJ3" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.436 0.436"  user="1107"/>
+						<mesh defset="3" name="V_mfknuckle" file="knuckle.stl"/>
+						<!--Proximal-->
+						<body name="mfproximal" pos="0 0 0">
+							<inertial pos="0.000 0.000 0.023" quat="0.707 -0.004 0.004 0.707" mass="0.014" diaginertia="0.00001 0.00001 0.00001"/>
+							<joint name="MFJ2" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1106"/>
+							<mesh defset="3" name="V_mfproximal" file="F3.stl"/>
+							<geom defset="1" name="C_mfproximal" type="capsule" pos="0 0 .0225" size=".01 .0225"/>
+							<site name="M_3" 	 	pos="0.000 0.013 0.025" 	group="2" 	user="1003"/>
+							<!--Middle-->
+							<body name="mfmiddle" pos="0 0 0.045">
+								<inertial pos="-0.000 -0.000 0.012" quat="0.707 0.000 -0.000 0.707" mass="0.012" diaginertia="0.00001 0.00001 0.00001"/>
+								<joint name="MFJ1" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1105"/>
+								<mesh defset="3" name="V_mfmiddle" file="F2.stl"/>
+								<geom defset="1" name="C_mfmiddle" type="capsule" pos="0 0 .0125" size=".00805 .0125"/>
+								<!--Distal-->
+								<body name="mfdistal" pos="0 0 0.025">
+									<inertial pos="0 -0.000 0.015" quat="0.707 -0.003 0.003 0.707" mass="0.010" diaginertia="0.00001 0.00001 0.00001"/>
+									<joint name="MFJ0" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1104"/>
+									<mesh defset="3" name="V_mfdistal" file="F1.stl"/>
+									<geom defset="1" name="C_mfdistal" type="capsule" pos="0 0 .012" size=".00705 .012"/>
+									<site name="M_0"	pos="0.000 0.013 0.026"	group="2"	user="1000"/>
+									<site name="S_mftip" 	pos="0.000 0 0.026"	group="1"/>
+								</body>
+							</body>
+						</body>
+					</body>
+					
+					
+					
+					<!-- ======= Ring Finger ======= -->
+					<body name="rfknuckle" pos="-0.011 0 0.095">
+						<inertial pos="-0.000 0.000 0.000" quat="0.520 0.854 0.006 -0.003" mass="0.008" diaginertia="0.00001 0.00001 0.00001"/>
+						<joint name="RFJ3" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.436 0.436"  user="1111"/>
+						<mesh defset="3" name="V_rfknuckle" file="knuckle.stl"/>
+						<!--Proximal-->
+						<body name="rfproximal" pos="0 0 0">
+							<inertial pos="0.000 0.000 0.023" quat="0.707 -0.004 0.004 0.707" mass="0.014" diaginertia="0.00001 0.00001 0.00001"/>
+							<joint name="RFJ2" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1110"/>
+							<mesh defset="3" name="V_rfproximal" file="F3.stl"/>
+							<geom defset="1" name="C_rfproximal" type="capsule" pos="0 0 .0225" size=".01 .0225"/>
+							<site name="M_4"	pos="0.000 0.013 0.025"	group="2" 	user="1004"/>
+							<!--Middle-->
+							<body name="rfmiddle" pos="0 0 0.045">
+								<inertial pos="-0.000 -0.000 0.012" quat="0.707 0.000 -0.000 0.707" mass="0.012" diaginertia="0.00001 0.00001 0.00001"/>
+								<joint name="RFJ1" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1109"/>
+								<mesh defset="3" name="V_rfmiddle" file="F2.stl"/>
+								<geom defset="1" name="C_rfmiddle" type="capsule" pos="0 0 .0125" size=".00805 .0125"/>
+								<!--Distal-->
+								<body name="rfdistal" pos="0 0 0.025">
+									<inertial pos="0 -0.000 0.015" quat="0.707 -0.003 0.003 0.707" mass="0.010" diaginertia="0.00001 0.00001 0.00001"/>
+									<joint name="RFJ0" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1108"/>
+									<mesh defset="3" name="V_rfdistal" file="F1.stl" pos="0 0 .001"/>
+									<geom defset="1" name="C_rfdistal" type="capsule" pos="0 0 .012" size=".00705 .012"/>
+									<site name="M_1"	pos="0.000 0.013 0.026"	group="2" 	user="1001"/>
+									<site name="S_rftip" 	pos="0.000 0 0.026"	group="1"/>
+								</body>
+							</body>
+						</body>
+					</body>
+					
+					
+					
+					<!-- ======= Little Finger ======= -->
+					<body name="lfmetacarpal" pos="-0.017 0 0.044">
+						<inertial pos="-0.014 0.001 0.014" quat="0.709 -0.092 -0.063 0.696" mass="0.075" diaginertia="0.00001 0.00001 0.00001"/>
+						<joint name="LFJ4" type="hinge" pos="0 0 0" axis="0.571 0 0.821" range="0 0.698"  user="1116"/>
+						<!--<joint name="LFJ4" type="hinge" pos="0 0 0" axis="0.571 0 0.821" range="0 0.0698"  user="1116"/>-->
+						<mesh defset="3" name="V_lfmetacarpal" pos="-0.016 0.000 -0.023" file="lfmetacarpal.stl"/>
+						<geom defset="1" name="C_lfmetacarpal" type="box" pos="-.0165 0 0.01" size=".0095 .0111 .025"/>
+						<!--Knuckle-->
+						<body name="lfknuckle" pos="-0.017 0 0.044">
+							<inertial pos="-0.000 0.000 0.000" quat="0.520 0.854 0.006 -0.003" mass="0.008" diaginertia="0.00001 0.00001 0.00001"/>
+							<joint name="LFJ3" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.436 0.436"  user="1115"/>
+							<mesh defset="3" name="V_lfknuckle" file="knuckle.stl"/>
+							<!--Proximal-->
+							<body name="lfproximal" pos="0 0 0">
+								<inertial pos="0.000 0.000 0.023" quat="0.707 -0.004 0.004 0.707" mass="0.014" diaginertia="0.00001 0.00001 0.00001"/>
+								<joint name="LFJ2" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1114"/>
+								<mesh defset="3" name="V_lfproximal" file="F3.stl"/>
+								<geom defset="1" name="C_lfproximal" type="capsule" pos="0 0 .0225" size=".01 .0225"/>
+								<site name="M_5"	pos="0.000 0.013 0.025"	group="2" 	user="1005"/>
+								<!--Middle-->
+								<body name="lfmiddle" pos="0 0 0.045">
+									<inertial pos="-0.000 -0.000 0.012" quat="0.707 0.000 -0.000 0.707" mass="0.012" diaginertia="0.00001 0.00001 0.00001"/>
+									<joint name="LFJ1" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1113"/>
+									<mesh defset="3" name="V_lfmiddle" file="F2.stl"/>
+									<geom defset="1" name="C_lfmiddle" type="capsule" pos="0 0 .0125" size=".00805 .0125"/>
+									<!--Distal-->
+									<body name="lfdistal" pos="0 0 0.025">
+										<inertial pos="0 -0.000 0.015" quat="0.707 -0.003 0.003 0.707" mass="0.010" diaginertia="0.00001 0.00001 0.00001"/>
+										<joint name="LFJ0" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.571"  user="1112"/>
+										<mesh defset="3" name="V_lfdistal" file="F1.stl" pos="0 0 .001"/>
+										<geom defset="1" name="C_lfdistal" type="capsule" pos="0 0 .012" size=".00705 .012"/>
+										<site name="M_2"	pos="0.000 0.013 0.026"	group="2" 	user="1002"/>
+										<site name="S_lftip" 	pos="0.000 0 0.026"	group="1"/>
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+					
+					
+					
+					<!-- ======= Thumb Finger ======= -->
+					<body name="thbase" pos="0.034 -0.009 0.029" axisangle="0  1 0  0.785" >
+						<inertial pos="0 0 0" mass="0.010" diaginertia="0.00001 0.00001 0.00001"/>
+						<joint name="THJ4" type="hinge" pos="0 0 0" axis="0 0 -1" range="-1.047 1.047"  user="1121"/>
+						<geom name="V_thbase" type="box" group="1" contype="0" mindist="0.01" pos="0 0 0" size="0.001 0.001 0.001" rgba="0.5 0.5 0.5 1" />
+						<!--Proximal-->
+						<body name="thproximal" pos="0 0 0">
+							<inertial pos="-0.000 -0.000 0.017" quat="0.982 -0.000 0.001 0.191" mass="0.016" diaginertia="0.00001 0.00001 0.00001"/>
+							<joint name="THJ3" type="hinge" pos="0 0 0" axis="1 0 0" range="0 1.309"  user="1120"/>
+							<mesh defset="3" name="V_thproximal" file="TH3_z.stl"/>
+							<geom defset="1" name="C_thproximal" type="capsule" pos="0 0 .019" size=".013 .019"/>
+							<site name="M_7"	pos="0.000 0.013 0.028" 	group="2" 	user="1007"/>
+							<!--Hub-->
+							<body name="thhub" pos="0 0 0.038">
+								<inertial pos="0 0 0" mass="0.002" diaginertia="0.00001 0.00001 0.00001"/>
+								<joint name="THJ2" type="hinge" pos="0 0 0" axis="1 0 0" range="-0.262 0.262"  user="1119"/>
+								<geom name="V_thhub" type="box" group="1" contype="0" mindist="0.01" pos="0 0 0" size="0.001 0.001 0.001" rgba="0.7 0.7 0.7 1" />
+								<!--Middle-->
+								<body name="thmiddle" pos="0 0 0">
+									<inertial pos="0.000 -0.000 0.016" quat="1.000 -0.001 -0.007 0.003" mass="0.016" diaginertia="0.00001 0.00001 0.00001"/>
+									<joint name="THJ1" type="hinge" pos="0 0 0" axis="0 -1 0" range="-0.524 0.524"  user="1118"/>
+									<mesh defset="3" name="V_thmiddle" file="TH2_z.stl"/>
+									<geom defset="1" name="C_thmiddle" type="capsule" pos="0 0 .016" size=".011 .016"/>
+									<!--Distal-->
+									<body name="thdistal" pos="0 0 0.032">
+										<inertial pos="0.000 -0.000 0.016" quat="0.999 -0.005 -0.047 0.005" mass="0.016" diaginertia="0.00001 0.00001 0.00001"/>
+										<joint name="THJ0" type="hinge" pos="0 0 0" axis="0 -1 0" range="0 1.571"  user="1117"/>
+										<mesh defset="3" name="V_thdistal" file="TH1_z.stl"/>
+										<geom defset="1" name="C_thdistal" type="capsule" pos="0 0 .013" size=".00918 .013"/>
+										<site name="M_6"	 	pos="0.011 0.000 0.0275" 	group="2" user="1006"/>
+										<site name="S_thtip" 	pos="0.000 0 0.0275"	group="1"/>
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+		</body>
+               
+    </body>
+	 
+	<tendon>		
+		
+		<!-- ======= Wrist ======= -->
+		<spatial name="T_WRJ0u" range="0.310 0.360" user="1236">
+			<site site = "I_WRJ0"/>
+			<geom geom = "W_WRJ0" sidesite="F_WRJ0u" />
+			<site site = "S_WRJ0u" />
+			<site site = "S_CY39"/>
+		</spatial>
+		<spatial name="T_WRJ0d" range="0.310 0.360" user="1237">
+			<site site = "I_WRJ0"/>
+			<geom geom = "W_WRJ0" sidesite="F_WRJ0d" />
+			<site site = "S_WRJ0d" />
+			<site site = "S_CY37"/>
+		</spatial>
+		<spatial name="T_WRJ1l" range="0.265 0.315" user="1238">
+			<site site = "S_CY36"/>
+			<site site = "S_WRJ1l"/>
+		</spatial>
+		<spatial name="T_WRJ1r" range="0.265 0.315" user="1239">
+			<site site = "S_CY38"/>
+			<site site = "S_WRJ1r"/>
+		</spatial>
+		
+		<!-- ======= First Finger ======= -->
+		<fixed name="T_FFJ1d" range="-0.007 0.030" user="1200">
+			<joint joint="FFJ0"  coef="0.00705"/>
+			<joint joint="FFJ1"  coef="0.00805"/>
+		</fixed>
+		<fixed name="T_FFJ1u" range="-0.030 0.007" user="1201">
+			<joint joint="FFJ0"  coef="-0.00705"/>
+			<joint joint="FFJ1"  coef="-0.00805"/>
+		</fixed>
+		<!--coupler tendon-->
+		<fixed name="T_FFJ1c" range ="-0.010 0.010"> 
+			<joint joint="FFJ0"  coef="0.00705"/>
+			<joint joint="FFJ1"  coef="-0.00805"/>
+		</fixed>
+		
+		<fixed name="T_FFJ2d" range="-0.007 0.030" user="1202">
+			<joint joint="FFJ2"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_FFJ2u" range="-0.030 0.007" user="1203">
+			<joint joint="FFJ2"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_FFJ3r" range="-0.018 0.018" user="1204">
+			<joint joint="FFJ3"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_FFJ3l" range="-0.018 0.018" user="1205">
+			<joint joint="FFJ3"  coef="0.010"/>
+		</fixed>		
+		
+		<!-- ======= Middle Finger ======= -->
+		<fixed name="T_MFJ1d" range="-0.007 0.030" user="1206">
+			<joint joint="MFJ0"  coef="0.00705"/>
+			<joint joint="MFJ1"  coef="0.00805"/>
+		</fixed>
+		<fixed name="T_MFJ1u" range="-0.030 0.007" user="1207">
+			<joint joint="MFJ0"  coef="-0.00705"/>
+			<joint joint="MFJ1"  coef="-0.00805"/>
+		</fixed>
+		<!--coupler tendon-->
+		<fixed name="T_MFJ1c" range ="-0.010 0.010"> 
+			<joint joint="MFJ0"  coef="0.00705"/>
+			<joint joint="MFJ1"  coef="-0.00805"/>
+		</fixed>		
+		<fixed name="T_MFJ2d" range="-0.007 0.030" user="1208">
+			<joint joint="MFJ2"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_MFJ2u" range="-0.030 0.007" user="1209">
+			<joint joint="MFJ2"  coef="-0.010"/>
+		</fixed>		
+		<fixed name="T_MFJ3r" range="-0.018 0.018" user="1210">
+			<joint joint="MFJ3"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_MFJ3l" range="-0.018 0.018" user="1211">
+			<joint joint="MFJ3"  coef="0.010"/>
+		</fixed>
+		
+		<!-- ======= Ring Finger ======= -->
+		<fixed name="T_RFJ1d" range="-0.007 0.030" user="1212">
+			<joint joint="RFJ0"  coef="0.00705"/>
+			<joint joint="RFJ1"  coef="0.00805"/>
+		</fixed>
+		<fixed name="T_RFJ1u" range="-0.030 0.007" user="1213">
+			<joint joint="RFJ0"  coef="-0.00705"/>
+			<joint joint="RFJ1"  coef="-0.00805"/>
+		</fixed>
+		<!--coupler tendon-->
+		<fixed name="T_RFJ1c" range ="-0.010 0.010"> 
+			<joint joint="RFJ0"  coef="0.00705"/>
+			<joint joint="RFJ1"  coef="-0.00805"/>
+		</fixed>
+		<fixed name="T_RFJ2d" range="-0.007 0.030" user="1214">
+			<joint joint="RFJ2"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_RFJ2u" range="-0.030 0.007" user="1215">
+			<joint joint="RFJ2"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_RFJ3r" range="-0.018 0.018" user="1216">
+			<joint joint="RFJ3"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_RFJ3l" range="-0.018 0.018" user="1217">
+			<joint joint="RFJ3"  coef="0.010"/>
+		</fixed>
+		
+		<!-- ======= Little Finger ======= -->
+		<fixed name="T_LFJ1d" range="-0.007 0.030" user="1218">
+			<joint joint="LFJ0"  coef="0.00705"/>
+			<joint joint="LFJ1"  coef="0.00805"/>
+		</fixed>
+		<fixed name="T_LFJ1u" range="-0.030 0.007" user="1219">
+			<joint joint="LFJ0"  coef="-0.00705"/>
+			<joint joint="LFJ1"  coef="-0.00805"/>
+		</fixed>
+		<!--coupler tendon-->
+		<fixed name="T_LFJ1c" range ="-0.010 0.010"> 
+			<joint joint="LFJ0"  coef="0.00705"/>
+			<joint joint="LFJ1"  coef="-0.00805"/>
+		</fixed>
+		<fixed name="T_LFJ2d" range="-0.007 0.030" user="1220">
+			<joint joint="LFJ2"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_LFJ2u" range="-0.030 0.007" user="1221">
+			<joint joint="LFJ2"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_LFJ3r" range="-0.018 0.018" user="1222">
+			<joint joint="LFJ3"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_LFJ3l" range="-0.018 0.018" user="1223">
+			<joint joint="LFJ3"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_LFJ4d" range="-0.007 0.030" user="1224">
+			<joint joint="LFJ4"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_LFJ4u" range="-0.030 0.007" user="1225">
+			<joint joint="LFJ4"  coef="-0.010"/>
+		</fixed>		
+		
+		<!-- ======= Thumb Finger ======= -->
+		<fixed name="T_THJ0r" range="-0.030 0.007" user="1226">
+			<joint joint="THJ0"  coef="0.009"/>
+		</fixed>
+		<fixed name="T_THJ0l" range="-0.007 0.030" user="1227">
+			<joint joint="THJ0"  coef="-0.009"/>
+		</fixed>
+		<fixed name="T_THJ1r" range="-0.018 0.018" user="1228">
+			<joint joint="THJ1"  coef="0.01099"/>
+		</fixed>
+		<fixed name="T_THJ1l" range="-0.018 0.018" user="1229">
+			<joint joint="THJ1"  coef="-0.01099"/>
+		</fixed>
+		<fixed name="T_THJ2d" range="-0.018 0.018" user="1230">
+			<joint joint="THJ2"  coef="0.01099"/>
+		</fixed>
+		<fixed name="T_THJ2u" range="-0.018 0.018" user="1231">
+			<joint joint="THJ2"  coef="-0.01099"/>
+		</fixed>
+		<fixed name="T_THJ3d" range="-0.007 0.030" user="1232">
+			<joint joint="THJ3"  coef="0.010"/>
+		</fixed>
+		<fixed name="T_THJ3u" range="-0.030 0.007" user="1233">
+			<joint joint="THJ3"  coef="-0.010"/>
+		</fixed>
+		<fixed name="T_THJ4c" range="-0.018 0.018" user="1234">
+			<joint joint="THJ4"  coef="0.01636"/>
+		</fixed>
+		<fixed name="T_THJ4a" range="-0.018 0.018" user="1235">
+			<joint joint="THJ4"  coef="-0.01636"/>
+		</fixed>
+		
+    </tendon>
+	
+	<actuator>
+
+<!-- ================ JOINT MOTORS ====================== -->
+		<!--<motor name="A_FFJ1d" user="2000" joint="FFJ1" gear="1"/>
+        <motor name="A_FFJ2d" user="2002" joint="FFJ2" gear="1"/>
+        <motor name="A_FFJ3l" user="2004" joint="FFJ3" gear="1"/>
+                                                            
+		<motor name="A_MFJ1d" user="2006" joint="MFJ1" gear="1"/>
+        <motor name="A_MFJ2d" user="2008" joint="MFJ2" gear="1"/>
+        <motor name="A_MFJ3l" user="2010" joint="MFJ3" gear="1"/>
+                                                            
+		<motor name="A_RFJ1d" user="2012" joint="RFJ1" gear="1"/>
+        <motor name="A_RFJ2d" user="2014" joint="RFJ2" gear="1"/>
+        <motor name="A_RFJ3l" user="2016" joint="RFJ3" gear="1"/>
+                                                            
+		<motor name="A_LFJ1d" user="2018" joint="LFJ1" gear="1"/>
+        <motor name="A_LFJ2d" user="2020" joint="LFJ2" gear="1"/>
+        <motor name="A_LFJ3l" user="2022" joint="LFJ3" gear="1"/>
+        <motor name="A_LFJ4d" user="2024" joint="LFJ4" gear="6"/>
+                                                            
+		<motor name="A_THJ0l" user="2026" joint="THJ0" gear="1"/>
+        <motor name="A_THJ1l" user="2028" joint="THJ1" gear="1"/>
+        <motor name="A_THJ2d" user="2030" joint="THJ2" gear="1"/>
+        <motor name="A_THJ3d" user="2032" joint="THJ3" gear="1"/>
+        <motor name="A_THJ4c" user="2034" joint="THJ4" gear="5"/>
+                                                      
+		<motor name="A_WRJ0d" user="2036" joint="WRJ0" gear="5"/>
+        <motor name="A_WRJ1l" user="2038" joint="WRJ1" gear="5"/>-->
+        
+<!-- ================ TENDON MOTORS ====================== -->		
+        
+		<general name="A_WRJ0d" user="2036" target="T_WRJ0d" forcerange="-110.36 0"/>
+        <general name="A_WRJ0u" user="2037" target="T_WRJ0u" forcerange="-110.36 0"/>
+        <general name="A_WRJ1l" user="2038" target="T_WRJ1l" forcerange="-110.36 0"/>
+        <general name="A_WRJ1r" user="2039" target="T_WRJ1r" forcerange="-110.36 0"/>
+		
+		<general name="A_FFJ1d" user="2000" target="T_FFJ1d" />
+        <general name="A_FFJ1u" user="2001" target="T_FFJ1u" />
+        <general name="A_FFJ2d" user="2002" target="T_FFJ2d" />
+        <general name="A_FFJ2u" user="2003" target="T_FFJ2u" />
+        <general name="A_FFJ3l" user="2004" target="T_FFJ3l" />
+        <general name="A_FFJ3r" user="2005" target="T_FFJ3r" />
+		
+		<general name="A_MFJ1d" user="2006" target="T_MFJ1d" />
+        <general name="A_MFJ1u" user="2007" target="T_MFJ1u" />
+        <general name="A_MFJ2d" user="2008" target="T_MFJ2d" />
+        <general name="A_MFJ2u" user="2009" target="T_MFJ2u" />
+        <general name="A_MFJ3l" user="2010" target="T_MFJ3l" />
+        <general name="A_MFJ3r" user="2011" target="T_MFJ3r" />
+        
+		<general name="A_RFJ1d" user="2012" target="T_RFJ1d" />
+        <general name="A_RFJ1u" user="2013" target="T_RFJ1u" />
+        <general name="A_RFJ2d" user="2014" target="T_RFJ2d" />
+        <general name="A_RFJ2u" user="2015" target="T_RFJ2u" />
+        <general name="A_RFJ3l" user="2016" target="T_RFJ3l" />
+        <general name="A_RFJ3r" user="2017" target="T_RFJ3r" />
+        
+		<general name="A_LFJ1d" user="2018" target="T_LFJ1d" />
+        <general name="A_LFJ1u" user="2019" target="T_LFJ1u" />
+        <general name="A_LFJ2d" user="2020" target="T_LFJ2d" />
+        <general name="A_LFJ2u" user="2021" target="T_LFJ2u" />
+        <general name="A_LFJ3l" user="2022" target="T_LFJ3l" />
+        <general name="A_LFJ3r" user="2023" target="T_LFJ3r" />
+        <general name="A_LFJ4d" user="2024" target="T_LFJ4d" />
+        <general name="A_LFJ4u" user="2025" target="T_LFJ4u" />
+        
+		<general name="A_THJ0l" user="2026" target="T_THJ0l" />
+        <general name="A_THJ0r" user="2027" target="T_THJ0r" />
+        <general name="A_THJ1l" user="2028" target="T_THJ1l" />
+        <general name="A_THJ1r" user="2029" target="T_THJ1r" />
+        <general name="A_THJ2d" user="2030" target="T_THJ2d" />
+        <general name="A_THJ2u" user="2031" target="T_THJ2u" />
+        <general name="A_THJ3d" user="2032" target="T_THJ3d" />
+        <general name="A_THJ3u" user="2033" target="T_THJ3u" />
+        <general name="A_THJ4c" user="2034" target="T_THJ4c" />
+        <general name="A_THJ4a" user="2035" target="T_THJ4a" />
+		
+<!--<!{1}** ================ TENDON PNEUMATICS ====================== **{1}>				
+				
+		<!{1}** ======= First Finger ======= **{1}>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ1d" tendon="T_FFJ1d" user="2000"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ1u" tendon="T_FFJ1u" user="2001"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ2d" tendon="T_FFJ2d" user="2002"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ2u" tendon="T_FFJ2u" user="2003"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ3l" tendon="T_FFJ3l" user="2004"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_FFJ3r" tendon="T_FFJ3r" user="2005"/>
+		                                                   
+		<!{1}** ======= Middle Finger =====**{1}>                 
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ1d" tendon="T_MFJ1d" user="2006"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ1u" tendon="T_MFJ1u" user="2007"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ2d" tendon="T_MFJ2d" user="2008"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ2u" tendon="T_MFJ2u" user="2009"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ3l" tendon="T_MFJ3l" user="2010"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_MFJ3r" tendon="T_MFJ3r" user="2011"/>
+		                                                   
+		<!{1}** ======= Ring Finger ======= **{1}>                
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ1d" tendon="T_RFJ1d" user="2012"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ1u" tendon="T_RFJ1u" user="2013"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ2d" tendon="T_RFJ2d" user="2014"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ2u" tendon="T_RFJ2u" user="2015"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ3l" tendon="T_RFJ3l" user="2016"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_RFJ3r" tendon="T_RFJ3r" user="2017"/>
+                                                           
+		<!{1}** ======= Little Finger ===== **{1}>                
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ1d" tendon="T_LFJ1d" user="2018"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ1u" tendon="T_LFJ1u" user="2019"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ2d" tendon="T_LFJ2d" user="2020"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ2u" tendon="T_LFJ2u" user="2021"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ3l" tendon="T_LFJ3l" user="2022"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ3r" tendon="T_LFJ3r" user="2023"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ4d" tendon="T_LFJ4d" user="2024"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_LFJ4u" tendon="T_LFJ4u" user="2025"/>
+		                                                   
+		<!{1}** ======= Thumb Finger ====== **{1}>                
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ0l" tendon="T_THJ0l" user="2026"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ0r" tendon="T_THJ0r" user="2027"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ1l" tendon="T_THJ1l" user="2028"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ1r" tendon="T_THJ1r" user="2029"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ2d" tendon="T_THJ2d" user="2030"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ2u" tendon="T_THJ2u" user="2031"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ3d" tendon="T_THJ3d" user="2032"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ3u" tendon="T_THJ3u" user="2033"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ4c" tendon="T_THJ4c" user="2034"/>
+		<pneumatic-tendon area="-0.000060" bias="6.0795" name="A_THJ4a" tendon="T_THJ4a" user="2035"/>
+		
+		<!{1}** ======= Wrist ======= **{1}>
+		<pneumatic-tendon area="-0.000178" bias="18.03585" name="A_WRJ0d" tendon="T_WRJ0d" user="2036"/>
+		<pneumatic-tendon area="-0.000178" bias="18.03585" name="A_WRJ0u" tendon="T_WRJ0u" user="2037"/>
+		<pneumatic-tendon area="-0.000178" bias="18.03585" name="A_WRJ1l" tendon="T_WRJ1l" user="2038"/>
+		<pneumatic-tendon area="-0.000178" bias="18.03585" name="A_WRJ1r" tendon="T_WRJ1r" user="2039"/>-->
+
+	</actuator>
+	
+				
+</mujoco>

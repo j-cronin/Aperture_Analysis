@@ -1,0 +1,1 @@
+echo y | C:\Users\jiwu\Dropbox\BCI_Hand\ApplicationModules\Miah\Visualization\Recon\plink miah@appserver.cs.washington.edu

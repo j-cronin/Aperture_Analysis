@@ -1,0 +1,6 @@
+Fri Mar 06 14:20:19 2015
+WARNING: Nan, Inf or huge value in QPOS. The simulation is unstable.
+
+Fri Mar 06 14:35:38 2015
+WARNING: Nan, Inf or huge value in QPOS. The simulation is unstable.
+

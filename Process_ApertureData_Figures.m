@@ -277,10 +277,10 @@ end
 
 %% This will plot the subject traces
 sids = ['ecb43e'; 'fca96e'; 'cdceeb'];
-for ii=3:3
+for ii=1:1
     sid = sids(ii,:);
     load(strcat('C:\Users\jcronin\Box Sync\Lab\ECoG\Aperture\Data Analysis\051016, for reviews\', sid))
-    figs =[1 2 3];
+    figs =[9 13];
     h=figure('position', [0, 0, 2070, 1059]);
     %%
     count=1;
@@ -314,11 +314,13 @@ for ii=3:3
         t_aper = (0:length(data)-1)/fs_aper; % This was defined previously over the entire time range for use in the aper_startANDendTimes function; now redefining over just the period of interest
         t_stim = (0:length(stimI)-1)/fs_stim; % stim timing (s), starting from the starting Stim (armed) sample)
         
+        colormap lines;
+        cmap = colormap ;
         
         %h.Units = 'inches';
         subplot(length(figs)*3,1,[count count+1])
         ax=gca;
-        plot(t_aper, data, 'k', 'Linewidth', 2), hold on
+        plot(t_aper, data, 'Color', cmap(1,:), 'Linewidth', 2), hold on
         plot(t_aper, high_boundary,'k:', 'Linewidth', 1), 
         plot(t_aper, low_boundary,'k:', 'Linewidth', 1)
         title(['Trial ' num2str(figs(i))]),
@@ -333,7 +335,7 @@ for ii=3:3
         
         subplot(length(figs)*3,1, count+2)
         ax=gca;
-        plot(t_stim, stimI*2/1000, 'k')
+        plot(t_stim, stimI*2/1000, 'Color', [46 40 130]/255)
         xlabel('Trial time (s)')
         legend('Biphasic stim trains')
        
